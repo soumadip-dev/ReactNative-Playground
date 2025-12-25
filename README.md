@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-A hands-on playground for learning React Native with Expo, focused on building cross-platform mobile apps and experimenting with core mobile development concepts. 🚀
+A hands-on playground for learning React Native with Expo, focused on building cross-platform mobile apps and experimenting with core mobile development concepts. 🧠
 </p>
 
 ## 🔋 Contents
