@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import QuestionCard from '../components/QuestionCard';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import React from 'react';
+import questions from '../questions';
 
 const QuizScreen = () => {
   return (
@@ -13,7 +14,7 @@ const QuizScreen = () => {
 
       {/* Body */}
       <View style={styles.body}>
-        <QuestionCard />
+        <QuestionCard question={questions[0]} />
         <Text style={styles.time}>20 sec</Text>
       </View>
 
