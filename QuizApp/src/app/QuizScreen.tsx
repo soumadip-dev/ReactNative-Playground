@@ -3,8 +3,10 @@ import QuestionCard from '../components/QuestionCard';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import React from 'react';
 import questions from '../questions';
+import Card from '../components/Card';
 
 const QuizScreen = () => {
+  const question = questions[0];
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -13,11 +15,14 @@ const QuizScreen = () => {
       </View>
 
       {/* Body */}
-      <View style={styles.body}>
-        <QuestionCard question={questions[0]} />
-        <Text style={styles.time}>20 sec</Text>
-      </View>
-
+      {question ? (
+        <View style={styles.body}>
+          <QuestionCard question={question} />
+          <Text style={styles.time}>20 sec</Text>
+        </View>
+      ) : (
+        <Card title="Game Over" />
+      )}
       {/* Footer */}
       <Pressable
         style={styles.button}
