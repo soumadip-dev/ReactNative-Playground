@@ -6,6 +6,12 @@
 A hands-on playground for learning React Native with Expo, focused on building cross-platform mobile apps and experimenting with core mobile development concepts. 🧠
 </p>
 
+<div align="center">
+  <img src="./BusinessCard/assets/banner.png" alt="Banner" width="900">
+</div>
+
+---
+
 ## 🔋 Contents
 
 - ⚛️ React Native fundamentals and experiments.
