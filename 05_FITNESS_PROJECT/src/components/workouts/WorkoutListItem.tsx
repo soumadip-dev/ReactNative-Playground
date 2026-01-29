@@ -5,7 +5,6 @@ import { StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useThemeColor } from '@/components/general/Themed';
 import dayjs from 'dayjs';
-import { calculateDuration } from '@/utils/time';
 import { getBestSet } from '@/services/setService';
 import { getWorkoutTotalWeight } from '@/services/workoutService';
 
@@ -73,26 +72,11 @@ export default function WorkoutListItem({ workout }: WorkoutListItemProps) {
         <View style={styles.metricsRow}>
           <View style={styles.metricItem}>
             <View style={[styles.metricIconBg, { backgroundColor: tint + '10' }]}>
-              <FontAwesome5 name="clock" size={12} color={tint} />
-            </View>
-            <View>
-              <Text style={styles.metricLabel}>Duration</Text>
-              <Text style={styles.metricValue}>
-                {' '}
-                {calculateDuration(workout.createdAt, workout.finishedAt)}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.metricDivider} />
-
-          <View style={styles.metricItem}>
-            <View style={[styles.metricIconBg, { backgroundColor: tint + '10' }]}>
               <FontAwesome5 name="weight-hanging" size={12} color={tint} />
             </View>
             <View>
               <Text style={styles.metricLabel}>Volume</Text>
-              <Text style={styles.metricValue}> {getWorkoutTotalWeight(workout)} kg</Text>
+              <Text style={styles.metricValue}>{getWorkoutTotalWeight(workout)} kg</Text>
             </View>
           </View>
         </View>
@@ -206,15 +190,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 16,
-    paddingTop: 16,
+    marginTop: 14,
+    paddingTop: 14,
     borderTopWidth: 1,
     borderTopColor: 'rgba(0, 0, 0, 0.06)',
   },
   metricsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 20,
   },
   metricItem: {
     flexDirection: 'row',
@@ -222,8 +205,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   metricIconBg: {
-    width: 34,
-    height: 34,
+    width: 36,
+    height: 36,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
@@ -237,14 +220,9 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   metricValue: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '700',
     letterSpacing: -0.2,
-  },
-  metricDivider: {
-    width: 1,
-    height: 28,
-    backgroundColor: 'rgba(0, 0, 0, 0.06)',
   },
   interactiveHint: {
     width: 38,
@@ -262,13 +240,9 @@ const styles = StyleSheet.create({
   },
 });
 
-// Dark mode overrides for better card differentiation
 const darkModeOverrides = {
   exerciseCard: {
     borderBottomColor: 'rgba(255, 255, 255, 0.06)',
-  },
-  metricDivider: {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
   footer: {
     borderTopColor: 'rgba(255, 255, 255, 0.08)',

@@ -1,3 +1,4 @@
+import { deleteSet, saveSet } from '@/db/sets';
 import { ExerciseSet, ExerciseWithSets } from '@/types/models';
 import * as Crypto from 'expo-crypto';
 
@@ -16,6 +17,8 @@ export const createSet = (exerciseId: string) => {
     id: Crypto.randomUUID(),
     exerciseId,
   };
+
+  saveSet(newSet);
   return newSet;
 };
 
@@ -34,6 +37,8 @@ export const updateSet = (set: ExerciseSet, updatedField: Pick<ExerciseSet, 'rep
     updatedSet.oneRM = updatedSet.weight * (36.0 / (37.0 - updatedSet.reps));
   }
 
+  saveSet(updatedSet);
+
   return updatedSet;
 };
 
@@ -44,6 +49,8 @@ const isSetComplete = (set: ExerciseSet) => {
 export const cleanSets = (sets: ExerciseSet[]) => {
   const completeSets = sets.filter(isSetComplete);
   const incompleteSets = sets.filter(s => !isSetComplete(s));
+
+  incompleteSets.forEach(({ id }) => deleteSet(id));
 
   return completeSets;
 };

@@ -11,6 +11,7 @@ import { immer } from 'zustand/middleware/immer';
 import { createSet, updateSet } from '@/services/setService';
 import { current } from 'immer';
 import { getCurrentWorkout } from '@/db/wokrouts';
+import { deleteSet } from '@/db/sets';
 
 type State = {
   currentWorkout: WorkoutWithExercises | null;
@@ -105,6 +106,7 @@ export const useWorkout = create<State & Actions>()(
       });
     },
     deleteSet: setId => {
+      deleteSet(setId);
       set(({ currentWorkout }) => {
         if (!currentWorkout) return;
         const exercises = currentWorkout?.exercises.find(exercise =>
