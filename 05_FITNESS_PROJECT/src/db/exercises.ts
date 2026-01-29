@@ -35,7 +35,6 @@ async function getExercises(workout_id: string): Promise<Exercise[]> {
       `SELECT * FROM exercises WHERE workout_id = ?`,
       workout_id
     );
-    console.log(exercises);
 
     return exercises.map(parseExercise);
   } catch (error) {
