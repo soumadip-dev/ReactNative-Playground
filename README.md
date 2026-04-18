@@ -7,7 +7,7 @@ A hands-on playground for learning React Native with Expo, focused on building c
 </p>
 
 <div align="center">
-  <img src="./BusinessCard/banner.png" alt="Banner" width="900">
+  <img src="./BusinessCard/assets/banner.png" alt="Banner" width="900">
 </div>
 
 ---
@@ -24,3 +24,5 @@ A hands-on playground for learning React Native with Expo, focused on building c
 ## 🎯 Purpose
 
 To gain practical experience with React Native and Expo, explore mobile app development patterns, and maintain a structured space for continuous experimentation and learning. 📈
+
+<!-- npx create-expo-app BusinessCard --template default@sdk-53 -->
