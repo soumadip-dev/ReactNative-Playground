@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Image, ScrollView, StyleSheet, Text, View, Button, Linking } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import ProjectCard from './ProjectCard';
 
 function DisplayInsets() {
   const insets = useSafeAreaInsets();
@@ -16,6 +17,30 @@ export default function App() {
   const onContactMe = () => {
     console.warn('Contact Me button clicked');
     Linking.openURL('mailto:soumadip.majila02@gmail.com');
+  };
+
+  const projects = [
+    {
+      name: 'FreshCart',
+      image: require('./assets/projects/project1.jpg'),
+    },
+    {
+      name: 'DebugDeer',
+      image: require('./assets/projects/project2.jpg'),
+    },
+    {
+      name: 'ProductHub',
+      image: require('./assets/projects/project3.jpg'),
+    },
+    {
+      name: 'Logiqo',
+      image: require('./assets/projects/project4.jpg'),
+    },
+  ];
+  const links = {
+    github: 'SavinVadim1312',
+    email: 'vadim@notjust.dev',
+    x: 'VadimNotJustDev',
   };
 
   // Safe area view practice:
@@ -62,9 +87,9 @@ export default function App() {
             <Text style={{ fontSize: 30, fontWeight: 'bold' }}>Soumadip Majila</Text>
             <Text>React Native Learner</Text>
             <View style={{ flexDirection: 'row', marginVertical: 10, gap: 10 }}>
-              <FontAwesome6 name="github" size={24} color="black" />
-              <FontAwesome6 name="x-twitter" size={24} color="black" />
-              <FontAwesome6 name="at" size={24} color="black" />
+              {links.github && <FontAwesome6 name="github" size={24} color="black" />}
+              {links.x && <FontAwesome6 name="x-twitter" size={24} color="black" />}
+              {links.email && <FontAwesome6 name="at" size={24} color="black" />}
             </View>
             <Button title="Contact Me" onPress={onContactMe} />
             <Text style={{ padding: 10, fontSize: 16, lineHeight: 30 }}>
@@ -85,6 +110,16 @@ export default function App() {
               goal is to build scalable, efficient, and impactful applications while continuously
               evolving my technical and analytical skills in a collaborative environment.
             </Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, marginTop: 20 }}>Projects</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ gap: 10, padding: 10 }}
+            >
+              {projects.map((project, index) => (
+                <ProjectCard name={project.name} image={project.image} key={index} />
+              ))}
+            </ScrollView>
             <StatusBar style="auto" />
           </View>
         </ScrollView>
