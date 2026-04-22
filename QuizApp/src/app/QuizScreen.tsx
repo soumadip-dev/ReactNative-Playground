@@ -3,6 +3,9 @@ import React from 'react';
 import QuestionCard from '../components/QuestionCard';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import questions from '../questions';
+const question = questions[0];
+
 const QuizScreen = () => {
   return (
     <SafeAreaView style={styles.page}>
@@ -14,7 +17,7 @@ const QuizScreen = () => {
 
         {/* Body */}
         <View>
-          <QuestionCard />
+          <QuestionCard question={question} />
           <Text style={styles.time}>20 sec</Text>
         </View>
 
