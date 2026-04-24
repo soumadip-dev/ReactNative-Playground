@@ -5,6 +5,8 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import CustomButton from '../components/CustomeButton';
 import Card from '../components/Card';
 import { useQuizContext } from '../context';
+import { useEffect } from 'react';
+import { useTimer } from '../hooks/useTimer'; //* Custome hook made by me
 
 const QuizScreen = () => {
   const {
@@ -13,7 +15,34 @@ const QuizScreen = () => {
     score,
     numberOfQuestions,
     questionIndex,
+    bestScore,
   } = useQuizContext();
+
+  // const [time, setTime] = useState(20);
+  // useEffect(() => {
+  //   setTime(20);
+  //   const interval = setInterval(() => {
+  //     setTime(time => time - 1);
+  //   }, 1000);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, [question]);
+
+  const { time, startTimer, clearTimer } = useTimer();
+
+  useEffect(() => {
+    startTimer();
+    return () => {
+      clearTimer();
+    };
+  }, [question]);
+
+  useEffect(() => {
+    if (time < 0) {
+      onNext();
+    }
+  }, [time]);
 
   return (
     <SafeAreaView style={styles.page}>
@@ -29,14 +58,14 @@ const QuizScreen = () => {
         {question ? (
           <View>
             <QuestionCard question={question} />
-            <Text style={styles.time}>20 sec</Text>
+            <Text style={styles.time}>{time} sec</Text>
           </View>
         ) : (
           <Card title="Well Done">
             <Text>
               Correct Answers: {score}/{numberOfQuestions}
             </Text>
-            <Text>Best Score: 10</Text>
+            <Text>Best Score: {bestScore}</Text>
           </Card>
         )}
 

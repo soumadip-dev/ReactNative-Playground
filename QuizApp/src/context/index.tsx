@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import questions from '../questions';
 import { question } from '../types';
 
@@ -10,6 +10,7 @@ type QuizContext = {
   setSelectedOption: (newOption: string) => void;
   score: number;
   numberOfQuestions: number;
+  bestScore: number;
 };
 
 const QuizContext = createContext<QuizContext>({
@@ -18,14 +19,23 @@ const QuizContext = createContext<QuizContext>({
   setSelectedOption: () => {},
   score: 0,
   numberOfQuestions: 0,
+  bestScore: 0,
 });
 
 export default function QuizProvider({ children }: PropsWithChildren) {
   const [questionIndex, setQuestionIndex] = useState(0);
   const question = questions[questionIndex];
   const [selectedOption, setSelectedOption] = useState<string | undefined>();
+  const [bestScore, setBestScore] = useState(0);
   const [score, setScore] = useState(0);
   const isFinished = questionIndex >= questions.length;
+
+  useEffect(() => {
+    // Check if there is a new best score
+    if (score > bestScore) {
+      setBestScore(score);
+    }
+  }, [isFinished]);
 
   const reStart = () => {
     setQuestionIndex(0);
@@ -54,6 +64,7 @@ export default function QuizProvider({ children }: PropsWithChildren) {
         setSelectedOption,
         score,
         numberOfQuestions: questions.length,
+        bestScore,
       }}
     >
       {children}
