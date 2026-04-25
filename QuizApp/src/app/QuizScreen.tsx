@@ -7,6 +7,8 @@ import Card from '../components/Card';
 import { useQuizContext } from '../context';
 import { useEffect } from 'react';
 import { useTimer } from '../hooks/useTimer'; //* Custome hook made by me
+import LottieView from 'lottie-react-native';
+import Confetti from '../../assets/Confetti.json';
 
 const QuizScreen = () => {
   const {
@@ -61,12 +63,15 @@ const QuizScreen = () => {
             <Text style={styles.time}>{time} sec</Text>
           </View>
         ) : (
-          <Card title="Well Done">
-            <Text>
-              Correct Answers: {score}/{numberOfQuestions}
-            </Text>
-            <Text>Best Score: {bestScore}</Text>
-          </Card>
+          <>
+            <LottieView source={Confetti} autoPlay loop={false} style={StyleSheet.absoluteFill} />
+            <Card title="Well Done">
+              <Text>
+                Correct Answers: {score}/{numberOfQuestions}
+              </Text>
+              <Text>Best Score: {bestScore}</Text>
+            </Card>
+          </>
         )}
 
         {/* Footer */}
