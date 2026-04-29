@@ -12,6 +12,7 @@ type WorkoutExerciseItemProps = {
 
 export default function WorkoutExerciseItem({ exercise }: WorkoutExerciseItemProps) {
   const bestSet = getBestSet(exercise.sets);
+  
   const tint = useThemeColor({}, 'tint');
   const textColor = useThemeColor({}, 'text');
 

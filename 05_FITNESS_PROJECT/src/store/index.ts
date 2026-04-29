@@ -1,9 +1,10 @@
-import { WorkoutWithExercises } from '@/types/models';
+import { ExerciseSet, WorkoutWithExercises } from '@/types/models';
 import { create } from 'zustand';
 import { finishedWorkout, newWorkout } from '@/services/workoutService';
 import { createExercise } from '@/services/exerciseService';
 import { immer } from 'zustand/middleware/immer';
-import { createSet } from '@/services/setService';
+import { createSet, updateSet } from '@/services/setService';
+import { current } from 'immer';
 
 type State = {
   currentWorkout: WorkoutWithExercises | null;
@@ -15,6 +16,7 @@ type Actions = {
   finshWorkout: () => void;
   addExercise: (name: string) => void;
   addSet: (exerciseId: string) => void;
+  updateSet: (setId: string, updatedField: Pick<ExerciseSet, 'reps' | 'weight'>) => void;
 };
 
 export const useWorkout = create<State & Actions>()(
@@ -39,7 +41,7 @@ export const useWorkout = create<State & Actions>()(
       });
     },
 
-    addExercise: (name: string) => {
+    addExercise: name => {
       const { currentWorkout } = get();
 
       if (!currentWorkout) {
@@ -60,13 +62,29 @@ export const useWorkout = create<State & Actions>()(
       });
     },
 
-    addSet: (exerciseId: string) => {
+    addSet: exerciseId => {
       const newSet = createSet(exerciseId);
 
       set(({ currentWorkout }) => {
         const exercise = currentWorkout?.exercises.find(ex => ex.id === exerciseId);
 
         exercise?.sets?.push(newSet);
+      });
+    },
+
+    updateSet: (setId, updatedField) => {
+      set(({ currentWorkout }) => {
+        const exercises = currentWorkout?.exercises.find(exercise =>
+          exercise.sets.some(set => set.id === setId)
+        );
+
+        const setIndex = exercises?.sets.findIndex(set => set.id === setId);
+
+        if (!exercises || setIndex === undefined || setIndex < 0) return;
+
+        const updatedSet = updateSet(current(exercises.sets[setIndex]), updatedField);
+
+        exercises.sets[setIndex] = updatedSet;
       });
     },
   }))

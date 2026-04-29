@@ -18,3 +18,21 @@ export const createSet = (exerciseId: string) => {
   };
   return newSet;
 };
+
+export const updateSet = (set: ExerciseSet, updatedField: Pick<ExerciseSet, 'reps' | 'weight'>) => {
+  const updatedSet = { ...set };
+
+  if (updatedField.reps !== undefined) {
+    updatedSet.reps = updatedField.reps;
+  }
+
+  if (updatedField.weight !== undefined) {
+    updatedSet.weight = updatedField.weight;
+  }
+
+  if (updatedSet.weight !== undefined && updatedSet.reps !== undefined) {
+    updatedSet.oneRM = updatedSet.weight * (36.0 / (37.0 - updatedSet.reps));
+  }
+
+  return updatedSet;
+};

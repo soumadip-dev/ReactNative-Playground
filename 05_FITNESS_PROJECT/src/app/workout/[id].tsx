@@ -10,7 +10,9 @@ import { useWorkout } from '@/store';
 
 export default function WorkoutScreen() {
   const { id } = useLocalSearchParams();
+
   const workout = useWorkout(state => state.workouts.find(workout => workout.id === id));
+  
   const tint = useThemeColor({}, 'tint');
   const textColor = useThemeColor({}, 'text');
 

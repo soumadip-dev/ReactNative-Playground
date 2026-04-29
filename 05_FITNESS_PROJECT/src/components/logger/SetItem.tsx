@@ -3,6 +3,7 @@ import { ExerciseSet } from '@/types/models';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useThemeColor } from '@/components/general/Themed';
+import { useWorkout } from '@/store';
 
 type SetItemProps = {
   index: number;
@@ -14,12 +15,12 @@ export default function SetItem({ index, set }: SetItemProps) {
   const [reps, setReps] = useState(set.reps?.toString() || '');
   const tint = useThemeColor({}, 'tint');
   const textColor = useThemeColor({}, 'text');
-
+  const updateSet = useWorkout(state => state.updateSet);
   const handleWeightChange = () => {
-    console.warn('Weight changed to: ', weight);
+    updateSet(set.id, { weight: parseFloat(weight) });
   };
   const handleRepsChange = () => {
-    console.warn('Reps changed to: ', reps);
+    updateSet(set.id, { reps: parseInt(reps) });
   };
 
   return (
