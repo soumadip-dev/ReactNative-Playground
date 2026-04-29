@@ -5,12 +5,14 @@ import { ExerciseSet, ExerciseWithSets } from '@/types/models';
 import SetItem from './SetItem';
 import CustomButton from '../general/CustomButton';
 import { useThemeColor } from '@/components/general/Themed';
+import { useWorkout } from '@/store';
 
 type WorkoutExerciseItemProps = { exercise: ExerciseWithSets };
 
 export default function WorkoutExerciseItem({ exercise }: WorkoutExerciseItemProps) {
   const tint = useThemeColor({}, 'tint');
   const textColor = useThemeColor({}, 'text');
+  const addSet = useWorkout(state => state.addSet);
 
   const sets: ExerciseSet[] = [
     {
@@ -43,7 +45,7 @@ export default function WorkoutExerciseItem({ exercise }: WorkoutExerciseItemPro
         title="+ Add set"
         type="link"
         style={{ padding: 12, marginTop: 12, elevation: 0, borderRadius: 12 }}
-        onPress={() => console.warn('Adding set')}
+        onPress={() => addSet(exercise.id)}
       />
     </Card>
   );

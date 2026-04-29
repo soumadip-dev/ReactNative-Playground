@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { finishedWorkout, newWorkout } from '@/services/workoutService';
 import { createExercise } from '@/services/exerciseService';
 import { immer } from 'zustand/middleware/immer';
+import { createSet } from '@/services/setService';
 
 type State = {
   currentWorkout: WorkoutWithExercises | null;
@@ -13,6 +14,7 @@ type Actions = {
   startWorkout: () => void;
   finshWorkout: () => void;
   addExercise: (name: string) => void;
+  addSet: (exerciseId: string) => void;
 };
 
 export const useWorkout = create<State & Actions>()(
@@ -55,6 +57,16 @@ export const useWorkout = create<State & Actions>()(
       //* Using immer
       set(state => {
         state.currentWorkout!.exercises.push(newExercise);
+      });
+    },
+
+    addSet: (exerciseId: string) => {
+      const newSet = createSet(exerciseId);
+
+      set(({ currentWorkout }) => {
+        const exercise = currentWorkout?.exercises.find(ex => ex.id === exerciseId);
+
+        exercise?.sets?.push(newSet);
       });
     },
   }))
