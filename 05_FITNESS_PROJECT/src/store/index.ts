@@ -17,6 +17,7 @@ type Actions = {
   addExercise: (name: string) => void;
   addSet: (exerciseId: string) => void;
   updateSet: (setId: string, updatedField: Pick<ExerciseSet, 'reps' | 'weight'>) => void;
+  deleteSet: (setId: string) => void;
 };
 
 export const useWorkout = create<State & Actions>()(
@@ -85,6 +86,20 @@ export const useWorkout = create<State & Actions>()(
         const updatedSet = updateSet(current(exercises.sets[setIndex]), updatedField);
 
         exercises.sets[setIndex] = updatedSet;
+      });
+    },
+    deleteSet: setId => {
+      set(({ currentWorkout }) => {
+        if (!currentWorkout) return;
+        const exercises = currentWorkout?.exercises.find(exercise =>
+          exercise.sets.some(set => set.id === setId)
+        );
+        if (!exercises) return;
+        exercises.sets = exercises?.sets.filter(set => set.id !== setId);
+
+        if (exercises.sets.length === 0) {
+          currentWorkout.exercises = currentWorkout.exercises.filter(ex => ex.id !== exercises.id);
+        }
       });
     },
   }))

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useThemeColor } from '@/components/general/Themed';
 import { useWorkout } from '@/store';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import CustomButton from '../general/CustomButton';
 
 type SetItemProps = {
   index: number;
@@ -15,7 +17,9 @@ export default function SetItem({ index, set }: SetItemProps) {
   const [reps, setReps] = useState(set.reps?.toString() || '');
   const tint = useThemeColor({}, 'tint');
   const textColor = useThemeColor({}, 'text');
+  const backgroundColour = useThemeColor({}, 'background');
   const updateSet = useWorkout(state => state.updateSet);
+  const deleteSet = useWorkout(state => state.deleteSet);
   const handleWeightChange = () => {
     updateSet(set.id, { weight: parseFloat(weight) });
   };
@@ -23,36 +27,53 @@ export default function SetItem({ index, set }: SetItemProps) {
     updateSet(set.id, { reps: parseInt(reps) });
   };
 
+  const renderRightActions = () => (
+    <CustomButton
+      onPress={() => deleteSet(set.id)}
+      title="Delete"
+      type="link"
+      style={{
+        width: 'auto',
+        padding: 5,
+        backgroundColor: backgroundColour,
+        borderRadius: 2,
+      }}
+      color="crimson"
+    />
+  );
+
   return (
-    <View style={styles.container}>
-      <View style={[styles.setNumberBadge, { backgroundColor: tint + '08' }]}>
-        <Text style={[styles.setNumber, { color: textColor }]}>{index + 1}</Text>
+    <Swipeable renderRightActions={renderRightActions}>
+      <View style={styles.container}>
+        <View style={[styles.setNumberBadge, { backgroundColor: tint + '08' }]}>
+          <Text style={[styles.setNumber, { color: textColor }]}>{index + 1}</Text>
+        </View>
+        <TextInput
+          placeholder="50"
+          value={weight}
+          onChangeText={setWeight}
+          style={[
+            styles.input,
+            { backgroundColor: useThemeColor({}, 'textInputBackground'), color: textColor },
+          ]}
+          keyboardType="numeric"
+          onBlur={handleWeightChange}
+          placeholderTextColor={textColor + '40'}
+        />
+        <TextInput
+          placeholder="8"
+          value={reps}
+          onChangeText={setReps}
+          style={[
+            styles.input,
+            { backgroundColor: useThemeColor({}, 'textInputBackground'), color: textColor },
+          ]}
+          keyboardType="numeric"
+          onBlur={handleRepsChange}
+          placeholderTextColor={textColor + '40'}
+        />
       </View>
-      <TextInput
-        placeholder="50"
-        value={weight}
-        onChangeText={setWeight}
-        style={[
-          styles.input,
-          { backgroundColor: useThemeColor({}, 'textInputBackground'), color: textColor },
-        ]}
-        keyboardType="numeric"
-        onBlur={handleWeightChange}
-        placeholderTextColor={textColor + '40'}
-      />
-      <TextInput
-        placeholder="8"
-        value={reps}
-        onChangeText={setReps}
-        style={[
-          styles.input,
-          { backgroundColor: useThemeColor({}, 'textInputBackground'), color: textColor },
-        ]}
-        keyboardType="numeric"
-        onBlur={handleRepsChange}
-        placeholderTextColor={textColor + '40'}
-      />
-    </View>
+    </Swipeable>
   );
 }
 
