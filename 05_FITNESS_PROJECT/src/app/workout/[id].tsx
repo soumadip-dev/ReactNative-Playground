@@ -6,10 +6,11 @@ import { FlatList } from 'react-native-gesture-handler';
 import WorkoutExerciseItem from '@/components/workouts/WorkoutExerciseItem';
 import dayjs from 'dayjs';
 import { useThemeColor } from '@/components/general/Themed';
+import { useWorkout } from '@/store';
 
 export default function WorkoutScreen() {
   const { id } = useLocalSearchParams();
-  const workout = dummyWorkouts.find(w => w.id === id);
+  const workout = useWorkout(state => state.workouts.find(workout => workout.id === id));
   const tint = useThemeColor({}, 'tint');
   const textColor = useThemeColor({}, 'text');
 

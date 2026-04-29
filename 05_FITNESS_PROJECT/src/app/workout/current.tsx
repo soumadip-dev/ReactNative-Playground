@@ -1,5 +1,5 @@
 import { View } from '@/components/general/Themed';
-import { Stack } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 import CustomButton from '@/components/general/CustomButton';
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -7,21 +7,29 @@ import WorkoutExerciseItem from '@/components/logger/WorkoutExerciseItem';
 import SelectExerciseModal from '@/components/logger/SelectExerciseModal';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WorkoutHeader from '@/components/logger/WorkoutHeader';
+import { useWorkout } from '@/store';
 
 export default function CurrentWorkoutScreen() {
+  const currentWorkout = useWorkout(state => state.currentWorkout);
+  const finshWorkout = useWorkout(state => state.finshWorkout);
+
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
+
+  if (!currentWorkout) {
+    return <Redirect href={'/'} />;
+  }
+
+  const onFinishWorkout = () => {
+    finshWorkout();
+  };
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <Stack.Screen
         options={{
           headerRight: () => (
-            <CustomButton
-              onPress={() => console.warn('Finish workout')}
-              title="Finish"
-              style={styles.finishButton}
-            />
+            <CustomButton onPress={onFinishWorkout} title="Finish" style={styles.finishButton} />
           ),
         }}
       />

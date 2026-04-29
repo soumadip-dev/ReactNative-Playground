@@ -32,7 +32,6 @@ export default function SelectExerciseModal({ onSelectExercise }: SelectExercise
       >
         <View style={[styles.overlay, { backgroundColor: 'rgba(0,0,0,0.75)' }]}>
           <Card title="Select exercise" style={styles.modalContent}>
-            {/* Header */}
             <View style={styles.header}>
               <View />
               <Pressable
@@ -70,7 +69,6 @@ export default function SelectExerciseModal({ onSelectExercise }: SelectExercise
                     },
                   ]}
                 >
-                  {/* Accent bar */}
                   <View style={[styles.accentBar, { backgroundColor: tint }]} />
 
                   <View style={styles.exerciseContent}>

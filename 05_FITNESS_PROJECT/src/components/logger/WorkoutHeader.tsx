@@ -2,20 +2,21 @@ import { View, Text } from '@/components/general/Themed';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import dummyWorkouts from '@/data/dummyWorkouts';
 import { calculateDurationHourMinutes } from '@/utils/time';
 import { useThemeColor } from '@/components/general/Themed';
+import { useWorkout } from '@/store';
 
 export default function WorkoutHeader() {
   const [timer, setTimer] = useState('0:00');
   const tint = useThemeColor({}, 'tint');
   const textColor = useThemeColor({}, 'text');
 
-  const workout = dummyWorkouts[0];
+  // const workout = dummyWorkouts[0];
+  const workout = useWorkout(state => state.currentWorkout);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const duration = calculateDurationHourMinutes(new Date(workout.createdAt), new Date());
+      const duration = calculateDurationHourMinutes(new Date(workout?.createdAt || ''), new Date());
       setTimer(duration);
     }, 1000);
 
