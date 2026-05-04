@@ -6,6 +6,7 @@ import { determineMediaCategory } from '../utils/media';
 import { VideoView } from 'expo-video';
 import { useCustomVideoPlayer } from '../hooks/useCustomVideoPlayer';
 import * as MediaLibrary from 'expo-media-library';
+import * as Sharing from 'expo-sharing';
 
 export default function MediaScreen() {
   const { mediaName: imageName } = useLocalSearchParams<{ mediaName: string }>();
@@ -45,6 +46,10 @@ export default function MediaScreen() {
     Alert.alert('Success', 'Saved successfully!');
   };
 
+  const handleShareMedia = async () => {
+    await Sharing.shareAsync(mediaUri, { dialogTitle: 'Share media' });
+  };
+
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -52,6 +57,7 @@ export default function MediaScreen() {
           title: 'Media',
           headerRight: () => (
             <View style={styles.headerActions}>
+              <MaterialIcons onPress={handleShareMedia} name="share" size={26} color="#3B82F6" />
               <MaterialIcons onPress={handleDeleteMedia} name="delete" size={26} color="#DC2626" />
               <MaterialIcons onPress={handleSaveMedia} name="save" size={26} color="#6B7280" />
             </View>
