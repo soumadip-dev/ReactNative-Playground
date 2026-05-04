@@ -16,6 +16,7 @@ import {
   CameraMode,
   useMicrophonePermissions,
   BarcodeScanningResult,
+  FlashMode,
 } from 'expo-camera';
 import { useEffect, useState, useRef } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -26,12 +27,16 @@ import { VideoView } from 'expo-video';
 import { useCustomVideoPlayer } from '../hooks/useCustomVideoPlayer';
 import * as WebBrowser from 'expo-web-browser';
 import QRCodeButton from '../components/QrCodeButton';
+import CameraTools from '../components/CameraTools';
 
 export default function CameraScreen() {
   const [cameraPermissionStatus, requestCameraPermission] = useCameraPermissions();
   const [microphonePermissionStatus, requestMicrophonePermission] = useMicrophonePermissions();
 
+  const [cameraTorch, setCameraTorch] = useState<boolean>(false);
+  const [cameraFlash, setCameraFlash] = useState<FlashMode>('off');
   const [cameraFacing, setCameraFacing] = useState<CameraType>('back');
+  const [cameraZoom, setCameraZoom] = useState<number>(0);
   const [capturedPhoto, setCapturedPhoto] = useState<CameraCapturedPicture>();
   const [captureMode, setCaptureMode] = useState<CameraMode>('picture');
 
@@ -100,10 +105,6 @@ export default function CameraScreen() {
       tension: 80,
       friction: 10,
     }).start();
-  };
-
-  const handleToggleCameraFacing = () => {
-    setCameraFacing(prev => (prev === 'back' ? 'front' : 'back'));
   };
 
   const handleSaveMedia = async (fileUri: string) => {
@@ -230,6 +231,9 @@ export default function CameraScreen() {
         <CameraView
           style={styles.camera}
           facing={cameraFacing}
+          zoom={cameraZoom}
+          enableTorch={cameraTorch}
+          flash={cameraFlash}
           ref={cameraRef}
           mode={captureMode}
           barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
@@ -241,6 +245,16 @@ export default function CameraScreen() {
             </Text>
           </View>
           {qrCodeDetected ? <QRCodeButton handleOpenQRCode={handleOpenQRCodeLink} /> : null}
+          <CameraTools
+            cameraZoom={cameraZoom}
+            cameraFlash={cameraFlash}
+            cameraTorch={cameraTorch}
+            setCameraZoom={setCameraZoom}
+            setCameraFacing={setCameraFacing}
+            setCameraTorch={setCameraTorch}
+            setCameraFlash={setCameraFlash}
+            cameraFacing={cameraFacing}
+          />
           <View style={styles.footer}>
             <View style={styles.modeToggleWrapper}>
               <Animated.View style={[styles.togglePill, { left: togglePillPosition }]} />
@@ -317,16 +331,7 @@ export default function CameraScreen() {
                 )}
               </Pressable>
 
-              <View style={styles.sideSlot}>
-                <Pressable
-                  style={styles.flipButton}
-                  onPress={handleToggleCameraFacing}
-                  accessibilityRole="button"
-                  accessibilityLabel="Flip camera"
-                >
-                  <MaterialIcons name="flip-camera-ios" size={26} color="white" />
-                </Pressable>
-              </View>
+              <View style={styles.sideSlot} />
             </View>
           </View>
         </CameraView>
@@ -427,12 +432,12 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    gap: 24,
   },
   sideSlot: {
     width: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: 56,
   },
   captureButton: {
     width: 72,
@@ -593,5 +598,3 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
 });
-
-// bunx expo install expo-sharing
