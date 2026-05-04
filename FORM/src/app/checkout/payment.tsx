@@ -27,9 +27,6 @@ export default function PaymentDetailsForm() {
     <KeyboardAwareScrollView>
       <FormProvider {...form}>
         <View style={styles.container}>
-          <Text style={styles.heading}>Payment Details</Text>
-          <Text style={styles.subHeading}>Enter your card information securely</Text>
-
           <ReactHookFormTextInput
             placeholder="1234 1234 1234 1234"
             labelText="Card Number"
@@ -77,19 +74,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 30,
-  },
-
-  heading: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 6,
-    color: '#111',
-  },
-
-  subHeading: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 24,
   },
 
   nextButton: {
