@@ -6,85 +6,125 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import ReactHookFormTextInput from '@/src/components/ReactHookFormTextInput';
 import { PaymentInfo, PaymentDetailsSchema } from '@/src/schemas/payment.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCheckoutForm } from '@/src/contexts/CheckoutFormProvider';
 
 export default function PaymentDetailsForm() {
+  const { setPaymentInfo, paymentInfo } = useCheckoutForm();
+
   const form = useForm<PaymentInfo>({
     resolver: zodResolver(PaymentDetailsSchema),
+    defaultValues: paymentInfo,
   });
 
   const { handleSubmit } = form;
 
   const handleNextStep: SubmitHandler<PaymentInfo> = data => {
-    console.log('DATA FROM THE FORM:', data);
+    setPaymentInfo(data);
     router.push('/checkout/confirm');
   };
 
   return (
     <KeyboardAwareScrollView>
       <FormProvider {...form}>
-        <ReactHookFormTextInput
-          placeholder="1234 1234 1234 1234"
-          labelText="Card Number"
-          name="cardNumber"
-          inputMode="numeric"
-        />
-        <View style={styles.cardDetailsRow}>
+        <View style={styles.container}>
+          <Text style={styles.heading}>Payment Details</Text>
+          <Text style={styles.subHeading}>Enter your card information securely</Text>
+
           <ReactHookFormTextInput
-            placeholder="MM/YY"
-            labelText="Expiry Date"
-            name="expiryDate"
-            wrapperStyle={styles.flexInput}
-          />
-          <ReactHookFormTextInput
-            placeholder="CVV"
-            labelText="CVV"
-            name="cvv"
+            placeholder="1234 1234 1234 1234"
+            labelText="Card Number"
+            name="cardNumber"
             inputMode="numeric"
-            wrapperStyle={styles.flexInput}
+          />
+
+          <View style={styles.cardDetailsRow}>
+            <ReactHookFormTextInput
+              placeholder="MM/YY"
+              labelText="Expiry Date"
+              name="expiryDate"
+              wrapperStyle={styles.flexInput}
+            />
+
+            <ReactHookFormTextInput
+              placeholder="CVV"
+              labelText="CVV"
+              name="cvv"
+              inputMode="numeric"
+              wrapperStyle={styles.flexInput}
+            />
+          </View>
+
+          {/* checkbox - Save your card information */}
+          <View style={styles.saveCardContainer}>
+            <View style={styles.checkboxPlaceholder} />
+            <Text style={styles.saveCardText}>Save card information</Text>
+          </View>
+
+          <CustomButton
+            title="Next"
+            style={styles.nextButton}
+            onPress={handleSubmit(handleNextStep)}
           />
         </View>
-        {/* checkbox - Save your card information */}
-        <View style={styles.saveCardContainer}>
-          <View style={styles.checkboxPlaceholder} />
-          <Text style={styles.saveCardText}>Save card information</Text>
-        </View>
-        <CustomButton
-          title="Next"
-          style={styles.nextButton}
-          onPress={handleSubmit(handleNextStep)}
-        />
       </FormProvider>
     </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 30,
+  },
+
+  heading: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 6,
+    color: '#111',
+  },
+
+  subHeading: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 24,
+  },
+
   nextButton: {
     marginTop: 'auto',
   },
+
   cardDetailsRow: {
     flexDirection: 'row',
-    gap: 5,
-    marginTop: 15,
+    gap: 12,
+    marginTop: 12,
   },
+
   flexInput: {
     flex: 1,
   },
+
   saveCardContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 18,
     gap: 10,
+    paddingHorizontal: 4,
   },
+
   checkboxPlaceholder: {
     width: 20,
     height: 20,
     borderWidth: 1,
-    borderRadius: 4,
-    marginLeft: 10,
+    borderColor: '#CFCFCF',
+    borderRadius: 5,
+    backgroundColor: '#FFF',
   },
 
   saveCardText: {
     fontSize: 14,
+    color: '#444',
   },
 });
