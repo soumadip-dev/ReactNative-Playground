@@ -8,6 +8,7 @@ export default function RootLayout() {
       {/* <Stack screenOptions={{ headerShown: false }} /> */}
       <Stack screenOptions={{ headerTintColor: 'blue' }}>
         <Stack.Screen name="index" options={{ title: 'Home' }} />
+        <Stack.Screen name="camera" options={{ headerShown: false }} />
       </Stack>
     </View>
   );
