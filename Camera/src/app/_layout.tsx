@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 export default function RootLayout() {
   return (
-    <View style={{ flex: 1, backgroundColor: 'lightgreen' }}>
+    <View style={{ flex: 1 }}>
       {/* <Slot /> */}
       {/* <Stack screenOptions={{ headerShown: false }} /> */}
       <Stack screenOptions={{ headerTintColor: 'blue' }}>

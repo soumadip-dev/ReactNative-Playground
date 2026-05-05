@@ -2,12 +2,16 @@ import { Link, useLocalSearchParams, Stack, router } from 'expo-router';
 import { Image, Text, View, StyleSheet, Alert } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { MaterialIcons } from '@expo/vector-icons';
+import { determineMediaCategory } from '../utils/media';
+import { ResizeMode, Video } from 'expo-av';
 
-export default function ImageScreen() {
-  const { imgName: name } = useLocalSearchParams<{ imgName: string }>();
-  const fullUri = (FileSystem.documentDirectory || '') + (name || '');
+export default function MediaScreen() {
+  const { mediaName: imageName } = useLocalSearchParams<{ mediaName: string }>();
 
-  const onDelete = async () => {
+  const mediaUri = (FileSystem.documentDirectory || '') + (imageName || '');
+  const type = determineMediaCategory(mediaUri);
+
+  const handleDeleteImage = async () => {
     Alert.alert(
       'Delete Image',
       'Are you sure you want to delete this image? This action cannot be undone.',
@@ -17,7 +21,7 @@ export default function ImageScreen() {
           text: 'Delete',
           style: 'destructive',
           onPress: async () => {
-            await FileSystem.deleteAsync(fullUri);
+            await FileSystem.deleteAsync(mediaUri);
             router.back();
           },
         },
@@ -32,13 +36,24 @@ export default function ImageScreen() {
           title: 'Media',
           headerRight: () => (
             <View style={styles.headerActions}>
-              <MaterialIcons onPress={onDelete} name="delete" size={26} color="#DC2626" />
+              <MaterialIcons onPress={handleDeleteImage} name="delete" size={26} color="#DC2626" />
               <MaterialIcons onPress={() => {}} name="save" size={26} color="#6B7280" />
             </View>
           ),
         }}
       />
-      <Image source={{ uri: fullUri }} style={styles.image} />
+
+      {type === 'image' && <Image source={{ uri: mediaUri }} style={styles.media} />}
+      {type === 'video' && (
+        <Video
+          source={{ uri: mediaUri }}
+          style={styles.media}
+          shouldPlay
+          isLooping
+          resizeMode={ResizeMode.COVER}
+          useNativeControls
+        />
+      )}
     </View>
   );
 }
@@ -56,7 +71,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: 4,
   },
-  image: {
+  media: {
     width: '100%',
     height: '100%',
   },

@@ -40,7 +40,8 @@
           "recordAudioAndroid": true,
           "barcodeScannerEnabled": true
         }
-      ]
+      ],
+      "expo-video"
     ]
   }
 }

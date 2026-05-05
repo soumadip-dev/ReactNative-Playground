@@ -3,54 +3,78 @@ import { Link, useFocusEffect } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useCallback, useState } from 'react';
 import * as FileSystem from 'expo-file-system';
+import { determineMediaCategory, MediaCategory } from '../utils/media';
+import { ResizeMode, Video } from 'expo-av';
 
-type Media = { name: string; uri: string };
+type MediaFile = { fileName: string; fileUri: string; type: MediaCategory };
 
 export default function HomeScreen() {
-  const [images, setImages] = useState<Media[]>([]);
+  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
 
   useFocusEffect(
     useCallback(() => {
-      loadFiles();
+      fetchMediaFiles();
     }, [])
   );
 
-  const loadFiles = async () => {
+  const fetchMediaFiles = async () => {
     if (!FileSystem.documentDirectory) return;
 
-    const res = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
-    console.log(res);
+    const directoryFiles = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
 
-    const imageFiles = res.filter(file => /\.(jpg|jpeg|png|gif|webp)$/i.test(file));
+    const filtered = directoryFiles
+      .map(fileName => {
+        const type = determineMediaCategory(fileName);
 
-    setImages(
-      imageFiles.map(file => ({
-        name: file,
-        uri: FileSystem.documentDirectory + file,
-      }))
-    );
+        return {
+          fileName,
+          fileUri: FileSystem.documentDirectory + fileName,
+          type,
+        };
+      })
+      .filter(file => file.type === 'image' || file.type === 'video');
+
+    setMediaFiles(filtered);
   };
 
   return (
     <View style={styles.container}>
-      {images.length === 0 ? (
+      {mediaFiles.length === 0 ? (
         <View style={styles.emptyContainer}>
           <View style={styles.emptyIconWrap}>
             <MaterialIcons name="photo-library" size={64} color="#ccc" />
           </View>
-          <Text style={styles.emptyText}>No images yet</Text>
+          <Text style={styles.emptyText}>No media found</Text>
           <Text style={styles.emptySubText}>Tap the camera button to capture your first photo</Text>
         </View>
       ) : (
         <FlatList
-          data={images}
+          data={mediaFiles}
           numColumns={3}
           contentContainerStyle={styles.grid}
           columnWrapperStyle={styles.gridRow}
           renderItem={({ item }) => (
-            <Link href={`/${item.name}`} asChild>
+            <Link href={`/${item.fileName}`} asChild>
               <Pressable style={styles.gridItem}>
-                <Image source={{ uri: item.uri }} style={styles.gridImage} />
+                {item.type === 'image' && (
+                  <Image source={{ uri: item.fileUri }} style={styles.gridImage} />
+                )}
+                {item.type === 'video' && (
+                  <>
+                    <Video
+                      source={{ uri: item.fileUri }}
+                      style={styles.gridImage}
+                      resizeMode={ResizeMode.COVER}
+                      positionMillis={100}
+                    />
+                    <MaterialIcons
+                      name="play-circle-outline"
+                      size={30}
+                      color="white"
+                      style={{ position: 'absolute' }}
+                    />
+                  </>
+                )}
               </Pressable>
             </Link>
           )}
