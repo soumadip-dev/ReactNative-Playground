@@ -3,13 +3,19 @@ import { Image, Text, View, StyleSheet, Alert } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { MaterialIcons } from '@expo/vector-icons';
 import { determineMediaCategory } from '../utils/media';
-import { ResizeMode, Video } from 'expo-av';
+import { VideoView, useVideoPlayer } from 'expo-video';
+import { useCustomVideoPlayer } from '../hooks/useCustomVideoPlayer';
 
 export default function MediaScreen() {
   const { mediaName: imageName } = useLocalSearchParams<{ mediaName: string }>();
-
   const mediaUri = (FileSystem.documentDirectory || '') + (imageName || '');
   const type = determineMediaCategory(mediaUri);
+
+  const { player } = useCustomVideoPlayer({
+    sourceUri: type === 'video' ? mediaUri : '',
+    autoPlay: true,
+    loop: true,
+  });
 
   const handleDeleteImage = async () => {
     Alert.alert(
@@ -42,16 +48,14 @@ export default function MediaScreen() {
           ),
         }}
       />
-
       {type === 'image' && <Image source={{ uri: mediaUri }} style={styles.media} />}
       {type === 'video' && (
-        <Video
-          source={{ uri: mediaUri }}
+        <VideoView
+          player={player}
           style={styles.media}
-          shouldPlay
-          isLooping
-          resizeMode={ResizeMode.COVER}
-          useNativeControls
+          contentFit="cover"
+          nativeControls={true}
+          allowsPictureInPicture={false}
         />
       )}
     </View>

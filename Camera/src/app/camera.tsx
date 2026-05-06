@@ -21,7 +21,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import path from 'path';
 import * as FileSystem from 'expo-file-system';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Video, ResizeMode } from 'expo-av';
+import { VideoView } from 'expo-video';
+import { useCustomVideoPlayer } from '../hooks/useCustomVideoPlayer';
 
 export default function CameraScreen() {
   const [cameraPermissionStatus, requestCameraPermission] = useCameraPermissions();
@@ -36,6 +37,12 @@ export default function CameraScreen() {
 
   const [recordingActive, setRecordingActive] = useState(false);
   const [recordedVideoUri, setRecordedVideoUri] = useState<string>();
+
+  const { player: videoPlayer, isPlaying } = useCustomVideoPlayer({
+    sourceUri: recordedVideoUri ?? '',
+    autoPlay: !!recordedVideoUri,
+    loop: true,
+  });
 
   useEffect(() => {
     if (
@@ -102,6 +109,7 @@ export default function CameraScreen() {
     });
 
     setCapturedPhoto(undefined);
+    setRecordedVideoUri(undefined);
     router.back();
   };
 
@@ -113,14 +121,29 @@ export default function CameraScreen() {
     return (
       <View style={styles.pictureContainer}>
         {mediaType === 'video' ? (
-          <Video
-            source={{ uri: mediaUri }}
-            style={{ width: '100%', flex: 1 }}
-            resizeMode={ResizeMode.COVER}
-            useNativeControls
-            shouldPlay
-            isLooping
-          />
+          <>
+            <VideoView
+              player={videoPlayer}
+              style={{ width: '100%', flex: 1 }}
+              allowsPictureInPicture
+              nativeControls={false}
+            />
+
+            <Pressable
+              onPress={() => {
+                if (isPlaying) {
+                  videoPlayer.pause();
+                } else {
+                  videoPlayer.play();
+                }
+              }}
+              style={styles.playPauseButton}
+              accessibilityRole="button"
+              accessibilityLabel={isPlaying ? 'Pause video' : 'Play video'}
+            >
+              <MaterialIcons name={isPlaying ? 'pause' : 'play-arrow'} size={40} color="white" />
+            </Pressable>
+          </>
         ) : (
           <Image source={{ uri: mediaUri }} style={styles.pictureImage} resizeMode="cover" />
         )}
@@ -514,5 +537,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 0.3,
+  },
+
+  playPauseButton: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -30,
+    marginLeft: -30,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(0,0,0,0.65)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
+    zIndex: 10,
   },
 });
