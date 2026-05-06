@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   errorMessage: {
-    color: '#D92D20',
+    color: 'crimson',
     fontSize: 12,
     lineHeight: 17,
     fontWeight: '400',

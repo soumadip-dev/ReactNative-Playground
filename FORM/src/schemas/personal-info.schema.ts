@@ -43,6 +43,7 @@ const PersonalInfoSchema = z.object({
       message: 'Please enter a valid phone number (e.g. +1234567890)',
     })
     .trim(),
+  smsNotifications: z.boolean().default(false),
 });
 
 export type PersonalInfo = z.infer<typeof PersonalInfoSchema>;

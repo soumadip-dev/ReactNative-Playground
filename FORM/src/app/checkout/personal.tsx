@@ -9,6 +9,7 @@ import { PersonalInfoSchema, PersonalInfo } from '@/src/schemas/personal-info.sc
 import { useCheckoutForm } from '@/src/contexts/CheckoutFormProvider';
 import countries from '@/assets/countries.json';
 import CustomPicker from '@/src/components/CustomPicker';
+import CustomSwitch from '@/src/components/CustomSwitch';
 
 export default function PersonalDetailsForm() {
   const { setPersonalInfo, personalInfo } = useCheckoutForm();
@@ -70,6 +71,7 @@ export default function PersonalDetailsForm() {
             inputMode="tel"
             name="phone"
           />
+          <CustomSwitch name="smsNotifications" label="Receive SMS updates on order" />
 
           <CustomButton
             title="Next"
