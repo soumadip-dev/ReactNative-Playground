@@ -1,10 +1,11 @@
-import { View, Text, Pressable, StyleSheet, FlatList, Image } from 'react-native';
-import { Link, useFocusEffect } from 'expo-router';
+import { View, Text, Pressable, StyleSheet, FlatList, Image, Alert } from 'react-native';
+import { Link, useFocusEffect, router } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useCallback, useState } from 'react';
 import * as FileSystem from 'expo-file-system';
 import { determineMediaCategory, MediaCategory } from '../utils/media';
 import { ResizeMode, Video } from 'expo-av';
+import * as ImagePicker from 'expo-image-picker';
 
 type MediaFile = { fileName: string; fileUri: string; type: MediaCategory };
 
@@ -18,23 +19,71 @@ export default function HomeScreen() {
   );
 
   const fetchMediaFiles = async () => {
-    if (!FileSystem.documentDirectory) return;
+    try {
+      if (!FileSystem.documentDirectory) return;
 
-    const directoryFiles = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
+      const directoryFiles = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
 
-    const filtered = directoryFiles
-      .map(fileName => {
+      const filtered = directoryFiles
+        .map(fileName => {
+          const type = determineMediaCategory(fileName);
+
+          return {
+            fileName,
+            fileUri: FileSystem.documentDirectory + fileName,
+            type,
+          };
+        })
+        .filter(file => file.type === 'image' || file.type === 'video');
+
+      setMediaFiles(filtered);
+    } catch (error) {
+      console.error('Error fetching media files:', error);
+      Alert.alert('Error', 'Failed to load media files');
+    }
+  };
+
+  const pickImage = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (!permissionResult.granted) {
+        Alert.alert('Permission required', 'Permission to access the media library is required.');
+        return;
+      }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images', 'videos'],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        const selectedAsset = result.assets[0];
+        const fileExtension = selectedAsset.uri.split('.').pop();
+        const fileType = selectedAsset.type === 'image' ? 'jpg' : 'mp4';
+        const fileName = `${Date.now()}.${fileExtension || fileType}`;
+
+        await FileSystem.copyAsync({
+          from: selectedAsset.uri,
+          to: FileSystem.documentDirectory + fileName,
+        });
+
         const type = determineMediaCategory(fileName);
 
-        return {
-          fileName,
+        const newMediaFile: MediaFile = {
+          fileName: fileName,
           fileUri: FileSystem.documentDirectory + fileName,
-          type,
+          type: type,
         };
-      })
-      .filter(file => file.type === 'image' || file.type === 'video');
 
-    setMediaFiles(filtered);
+        setMediaFiles(prevFiles => [newMediaFile, ...prevFiles]);
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+      Alert.alert('Error', 'Failed to add media. Please try again.');
+    }
   };
 
   return (
@@ -80,6 +129,11 @@ export default function HomeScreen() {
           )}
         />
       )}
+
+      <Pressable style={styles.phoneMediaButton} onPress={pickImage}>
+        <MaterialIcons name="folder-open" size={24} color="white" />
+        <Text style={styles.phoneMediaButtonText}>Add media</Text>
+      </Pressable>
 
       <Link href="/camera" asChild>
         <Pressable style={styles.floatingButton}>
@@ -143,6 +197,29 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontWeight: '400',
     letterSpacing: 0.1,
+  },
+
+  phoneMediaButton: {
+    backgroundColor: '#059669',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 28,
+    position: 'absolute',
+    bottom: 28,
+    left: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    shadowColor: '#059669',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 14,
+    elevation: 10,
+  },
+  phoneMediaButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 
   floatingButton: {

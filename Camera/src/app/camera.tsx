@@ -79,7 +79,6 @@ export default function CameraScreen() {
     setRecordingActive(true);
     const videoResult = await cameraRef.current?.recordAsync({ maxDuration: 10 });
 
-    console.log(videoResult);
     if (videoResult) setRecordedVideoUri(videoResult.uri);
 
     setRecordingActive(false);
