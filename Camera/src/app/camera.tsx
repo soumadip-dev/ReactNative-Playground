@@ -15,6 +15,7 @@ import {
   useCameraPermissions,
   CameraMode,
   useMicrophonePermissions,
+  BarcodeScanningResult,
 } from 'expo-camera';
 import { useEffect, useState, useRef } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -23,6 +24,8 @@ import * as FileSystem from 'expo-file-system';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { VideoView } from 'expo-video';
 import { useCustomVideoPlayer } from '../hooks/useCustomVideoPlayer';
+import * as WebBrowser from 'expo-web-browser';
+import QRCodeButton from '../components/QrCodeButton';
 
 export default function CameraScreen() {
   const [cameraPermissionStatus, requestCameraPermission] = useCameraPermissions();
@@ -37,6 +40,10 @@ export default function CameraScreen() {
 
   const [recordingActive, setRecordingActive] = useState(false);
   const [recordedVideoUri, setRecordedVideoUri] = useState<string>();
+
+  const [qrCodeDetected, setQrCodeDetected] = useState<string>('');
+  const [isOpeningBrowser, setIsOpeningBrowser] = useState<boolean>(false);
+  const qrCodeTimeoutRef = useRef<number | null>(null);
 
   const { player: videoPlayer, isPlaying } = useCustomVideoPlayer({
     sourceUri: recordedVideoUri ?? '',
@@ -193,16 +200,47 @@ export default function CameraScreen() {
     outputRange: ['2%', '50%'],
   });
 
+  function handleBarcodeScanned(scanningResult: BarcodeScanningResult) {
+    if (scanningResult.data) {
+      setQrCodeDetected(scanningResult.data);
+    }
+    if (qrCodeTimeoutRef.current) {
+      clearTimeout(qrCodeTimeoutRef.current);
+    }
+
+    qrCodeTimeoutRef.current = setTimeout(() => {
+      setQrCodeDetected('');
+    }, 1000);
+  }
+
+  async function handleOpenQRCodeLink() {
+    setIsOpeningBrowser(true);
+    const browserResult = await WebBrowser.openBrowserAsync(qrCodeDetected, {
+      presentationStyle: WebBrowser.WebBrowserPresentationStyle.FORM_SHEET,
+    });
+
+    if (browserResult.type === 'cancel') {
+      setIsOpeningBrowser(false);
+    }
+  }
+
   const renderCameraView = () => {
     return (
       <>
-        <CameraView style={styles.camera} facing={cameraFacing} ref={cameraRef} mode={captureMode}>
+        <CameraView
+          style={styles.camera}
+          facing={cameraFacing}
+          ref={cameraRef}
+          mode={captureMode}
+          barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+          onBarcodeScanned={handleBarcodeScanned}
+        >
           <View style={styles.modeBadge}>
             <Text style={styles.modeBadgeText}>
               {captureMode === 'picture' ? '📷 PHOTO' : '🎬 VIDEO'}
             </Text>
           </View>
-
+          {qrCodeDetected ? <QRCodeButton handleOpenQRCode={handleOpenQRCodeLink} /> : null}
           <View style={styles.footer}>
             <View style={styles.modeToggleWrapper}>
               <Animated.View style={[styles.togglePill, { left: togglePillPosition }]} />
@@ -555,3 +593,5 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
 });
+
+// bunx expo install expo-sharing
