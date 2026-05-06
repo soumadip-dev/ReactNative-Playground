@@ -1,5 +1,6 @@
 import { Link } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { View, Text } from '@/components/general/Themed';
 
 export default function HomeScreen() {
   return (
@@ -26,7 +27,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
     padding: 24,
     justifyContent: 'center',
   },
@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 18,
-    color: '#334155',
     marginBottom: 12,
     textAlign: 'center',
   },
@@ -44,7 +43,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingVertical: 14,
     paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF',
     borderRadius: 10,
     color: '#2563EB',
     borderWidth: 1,
