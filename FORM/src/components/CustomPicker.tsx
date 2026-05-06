@@ -35,10 +35,10 @@ export default function CustomPicker({
             marginBottom: 2,
             borderRadius: 10,
             borderWidth: 1,
-            borderColor: 'gainsboro',
+            borderColor: fieldError ? 'crimson' : 'gainsboro',
           },
           inputIOS: {
-            borderColor: 'gainsboro',
+            borderColor: fieldError ? 'crimson' : 'gainsboro',
             borderWidth: 1,
             width: '100%',
             padding: 10,
@@ -71,5 +71,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginLeft: 2,
     height: 17,
+  },
+  errorInput: {
+    borderColor: 'crimson',
   },
 });

@@ -10,6 +10,7 @@ import { useCheckoutForm } from '@/src/contexts/CheckoutFormProvider';
 import countries from '@/assets/countries.json';
 import CustomPicker from '@/src/components/CustomPicker';
 import CustomSwitch from '@/src/components/CustomSwitch';
+import CustomDateTimePicker from '@/src/components/CustomDateTimePicker';
 
 export default function PersonalDetailsForm() {
   const { setPersonalInfo, personalInfo } = useCheckoutForm();
@@ -71,6 +72,9 @@ export default function PersonalDetailsForm() {
             inputMode="tel"
             name="phone"
           />
+
+          <CustomDateTimePicker name="dob" labelText="Date of birth" />
+
           <CustomSwitch name="smsNotifications" label="Receive SMS updates on order" />
 
           <CustomButton
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 30,
-    gap: 12,
+    gap: 10,
   },
 
   locationRow: {

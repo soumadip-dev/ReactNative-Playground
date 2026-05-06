@@ -34,7 +34,6 @@ const PersonalInfoSchema = z.object({
     .string({ message: 'Country is required' })
     .min(2, { message: 'Country name must be at least 2 characters' })
     .max(100, { message: 'Country name must be at most 100 characters' })
-    .regex(/^[a-zA-Z\s'\-\.]+$/, { message: 'Please enter a valid country name' })
     .trim(),
 
   phone: z
@@ -43,6 +42,15 @@ const PersonalInfoSchema = z.object({
       message: 'Please enter a valid phone number (e.g. +1234567890)',
     })
     .trim(),
+
+  dob: z.coerce
+    .date({
+      message: 'Date of birth is required',
+    })
+    .refine(date => date <= new Date(), {
+      message: 'Date of birth cannot be in the future',
+    }),
+
   smsNotifications: z.boolean().default(false),
 });
 

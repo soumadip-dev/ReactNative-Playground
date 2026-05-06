@@ -20,7 +20,11 @@ export default function CustomSwitch({ name, label, style }: CustomSwitchProps) 
         <Switch value={!!value} onValueChange={onChange} />
       </View>
 
-      {validationError && <Text style={styles.error}>{validationError.message}</Text>}
+      {validationError && (
+        <Text style={styles.error} numberOfLines={1}>
+          {validationError.message}
+        </Text>
+      )}
     </View>
   );
 }
