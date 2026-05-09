@@ -2,41 +2,55 @@ import CustomButton from '@/src/components/CustomeButton';
 import CustomTextInput from '@/src/components/CustomeTextInput';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import KeyboardAwareScrollView from '@/src/components/KeyboardAwareScrollView';
 
 export default function PersonalDetailsForm() {
-  const [fullname, setFullname] = useState('');
-  function handleNext() {
+  const [fullName, setFullName] = useState('');
+
+  function handleNextStep() {
     // Validate the form
     // If valid, navigate to the next screen
 
-    console.log('Submit: ', fullname);
+    console.log('Submit: ', fullName);
 
     router.push('/checkout/payment');
   }
+
   return (
-    <View style={styles.container}>
+    <KeyboardAwareScrollView>
       <CustomTextInput placeholder="John Doe" labelText="Full name" />
+
       <CustomTextInput placeholder="123 Main Street" labelText="Address" />
-      <View style={{ flexDirection: 'row', gap: 5 }}>
-        <CustomTextInput placeholder="New York" labelText="City" wrapperStyle={{ flex: 1 }} />
-        <CustomTextInput placeholder="12345" labelText="Post code" wrapperStyle={{ flex: 1 }} />
+
+      <View style={styles.locationRow}>
+        <CustomTextInput placeholder="New York" labelText="City" wrapperStyle={styles.flexInput} />
+
+        <CustomTextInput
+          placeholder="12345"
+          labelText="Post code"
+          wrapperStyle={styles.flexInput}
+        />
       </View>
+
       <CustomTextInput placeholder="123456789" labelText="Phone number" inputMode="tel" />
-      <CustomButton title="Next" style={styles.button} onPress={handleNext} />
-    </View>
+
+      <CustomButton title="Next" style={styles.nextButton} onPress={handleNextStep} />
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
-    padding: 10,
+  locationRow: {
+    flexDirection: 'row',
     gap: 5,
   },
-  button: {
+
+  flexInput: {
+    flex: 1,
+  },
+
+  nextButton: {
     marginTop: 'auto',
-    marginBottom: 25,
   },
 });

@@ -1,28 +1,26 @@
 import CustomButton from '@/src/components/CustomeButton';
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+import KeyboardAwareScrollView from '@/src/components/KeyboardAwareScrollView';
 
 export default function PaymentDetailsForm() {
-  function handleNext() {
+  function handleNextStep() {
     // Validate the form
     // If valid, navigate to the next screen
     router.push('/checkout/confirm');
   }
+
   return (
-    <View style={styles.container}>
+    <KeyboardAwareScrollView>
       <Text>Payment Screen.</Text>
-      <CustomButton title="Next" style={styles.button} onPress={handleNext} />
-    </View>
+
+      <CustomButton title="Next" style={styles.nextButton} onPress={handleNextStep} />
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
-    padding: 10,
-  },
-  button: {
+  nextButton: {
     marginTop: 'auto',
     marginBottom: 25,
   },
