@@ -1,21 +1,27 @@
-//* Use it if not using react-hook-form
+//* Use it if using react-hook-form
 
 import { ComponentProps } from 'react';
 import { StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
+import { useController } from 'react-hook-form';
 
-type CustomTextInputProps = {
+type ReactHookFormTextInputProps = {
+  name: string;
   labelText?: string;
   inputStyle?: StyleProp<ViewStyle>;
   wrapperStyle?: StyleProp<ViewStyle>;
 } & ComponentProps<typeof TextInput>;
 
-export default function CustomTextInput({
+export default function ReactHookFormTextInput({
+  name,
   labelText,
   inputStyle,
   wrapperStyle,
   ...inputProps
-}: CustomTextInputProps) {
-  const validationError = undefined;
+}: ReactHookFormTextInputProps) {
+  const {
+    field: { onChange, onBlur, value },
+    fieldState: { error: validationError },
+  } = useController({ name });
 
   return (
     <View style={wrapperStyle}>
@@ -23,15 +29,17 @@ export default function CustomTextInput({
 
       <TextInput
         {...inputProps}
+        onBlur={onBlur}
+        onChangeText={onChange}
+        value={value}
         style={[styles.input, inputStyle, validationError && styles.errorInput]}
-        // onChangeText={() => {}} // simplification of this => onChangeText={text => setFullname(text)}
-        // onBlur={() => console.log('Blur')}
-        // onEndEditing={() => console.log('onendediting')}
       />
 
-      <Text style={styles.errorMessage} numberOfLines={1}>
-        {validationError?.message}
-      </Text>
+      {validationError && (
+        <Text style={styles.errorMessage} numberOfLines={1}>
+          {validationError?.message || 'Error'}
+        </Text>
+      )}
     </View>
   );
 }
