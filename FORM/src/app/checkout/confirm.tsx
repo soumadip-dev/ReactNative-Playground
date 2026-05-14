@@ -47,7 +47,7 @@ export default function ConfirmForm() {
             {Object.entries(paymentInfo).map(([key, value]) => (
               <View key={key} style={styles.row}>
                 <Text style={styles.label}>{key}</Text>
-                <Text style={styles.value}>{value}</Text>
+                <Text style={styles.value}>{value.toString()}</Text>
               </View>
             ))}
           </View>

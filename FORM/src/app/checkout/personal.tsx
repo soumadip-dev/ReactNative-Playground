@@ -55,6 +55,7 @@ export default function PersonalDetailsForm() {
           </View>
 
           <CustomPicker
+            labelText="Country"
             name="country"
             placeholder={{ label: 'Select country', value: null }}
             items={countries.map(country => ({

@@ -33,13 +33,16 @@ export default function CustomPicker({
           viewContainer: {
             marginTop: 4,
             marginBottom: 2,
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: 'gainsboro',
           },
           inputIOS: {
             borderColor: 'gainsboro',
             borderWidth: 1,
             width: '100%',
             padding: 10,
-            borderRadius: 5,
+            borderRadius: 10,
           },
         }}
       />

@@ -7,6 +7,7 @@ import ReactHookFormTextInput from '@/src/components/ReactHookFormTextInput';
 import { PaymentInfo, PaymentDetailsSchema } from '@/src/schemas/payment.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCheckoutForm } from '@/src/contexts/CheckoutFormProvider';
+import CustomCheckbox from '@/src/components/CustomCheckbox';
 
 export default function PaymentDetailsForm() {
   const { setPaymentInfo, paymentInfo } = useCheckoutForm();
@@ -51,11 +52,7 @@ export default function PaymentDetailsForm() {
             />
           </View>
 
-          {/* checkbox - Save your card information */}
-          <View style={styles.saveCardContainer}>
-            <View style={styles.checkboxPlaceholder} />
-            <Text style={styles.saveCardText}>Save card information</Text>
-          </View>
+          <CustomCheckbox name="saveCard" label="Save card information" />
 
           <CustomButton
             title="Next"
@@ -97,15 +94,6 @@ const styles = StyleSheet.create({
     marginTop: 18,
     gap: 10,
     paddingHorizontal: 4,
-  },
-
-  checkboxPlaceholder: {
-    width: 20,
-    height: 20,
-    borderWidth: 1,
-    borderColor: '#CFCFCF',
-    borderRadius: 5,
-    backgroundColor: '#FFF',
   },
 
   saveCardText: {
