@@ -45,16 +45,6 @@ export default function ReactHookFormTextInput({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    marginBottom: 14,
-  },
-
-  button: {
-    marginTop: 'auto',
-    marginBottom: 25,
-  },
-
   label: {
     fontSize: 14,
     fontWeight: '600',

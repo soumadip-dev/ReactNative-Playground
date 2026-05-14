@@ -30,6 +30,13 @@ const PersonalInfoSchema = z.object({
     })
     .trim(),
 
+  country: z
+    .string({ message: 'Country is required' })
+    .min(2, { message: 'Country name must be at least 2 characters' })
+    .max(100, { message: 'Country name must be at most 100 characters' })
+    .regex(/^[a-zA-Z\s'\-\.]+$/, { message: 'Please enter a valid country name' })
+    .trim(),
+
   phone: z
     .string({ message: 'Phone number is required' })
     .regex(/^\+?[1-9]\d{6,14}$/, {

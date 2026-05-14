@@ -7,6 +7,8 @@ import ReactHookFormTextInput from '@/src/components/ReactHookFormTextInput';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PersonalInfoSchema, PersonalInfo } from '@/src/schemas/personal-info.schema';
 import { useCheckoutForm } from '@/src/contexts/CheckoutFormProvider';
+import countries from '@/assets/countries.json';
+import CustomPicker from '@/src/components/CustomPicker';
 
 export default function PersonalDetailsForm() {
   const { setPersonalInfo, personalInfo } = useCheckoutForm();
@@ -52,6 +54,15 @@ export default function PersonalDetailsForm() {
             />
           </View>
 
+          <CustomPicker
+            name="country"
+            placeholder={{ label: 'Select country', value: null }}
+            items={countries.map(country => ({
+              label: country.name,
+              value: country.code,
+            }))}
+          />
+
           <ReactHookFormTextInput
             placeholder="123456789"
             labelText="Phone number"
@@ -69,19 +80,18 @@ export default function PersonalDetailsForm() {
     </KeyboardAwareScrollView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 30,
+    gap: 12,
   },
 
   locationRow: {
     flexDirection: 'row',
     gap: 12,
-    marginTop: 12,
   },
 
   flexInput: {
