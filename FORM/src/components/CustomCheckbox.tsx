@@ -5,10 +5,11 @@ import { View, Text, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 type CustomCheckbox = {
   name: string;
   label?: string;
+  color?: string;
   style?: StyleProp<ViewStyle>;
 };
 
-export default function CustomCheckbox({ name, label, style }: CustomCheckbox) {
+export default function CustomCheckbox({ name, label, style, color }: CustomCheckbox) {
   const {
     field: { value, onChange },
     fieldState: { error: fieldError },
@@ -17,7 +18,12 @@ export default function CustomCheckbox({ name, label, style }: CustomCheckbox) {
   return (
     <View style={styles.wrapper}>
       <View style={styles.row}>
-        <Checkbox style={[styles.checkBox, style]} value={value} onValueChange={onChange} />
+        <Checkbox
+          style={[styles.checkBox, style]}
+          value={value}
+          onValueChange={onChange}
+          color={value ? color : undefined}
+        />
         <Text style={styles.label}>{label}</Text>
       </View>
       {fieldError && (
