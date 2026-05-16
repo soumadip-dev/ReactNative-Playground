@@ -1,25 +1,23 @@
 import { Link } from 'expo-router';
 import { StyleSheet } from 'react-native';
-import { View, Text } from '@/components/general/Themed';
+import { View } from '@/components/general/Themed';
+import CustomButton from '@/components/general/CustomButton';
+import { FlatList } from 'react-native';
+import workouts from '@/data/dummyWorkouts';
+import WorkoutListItem from '@/components/workouts/WorkoutListItem';
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <View style={styles.main}>
-        <Text style={styles.subtitle}>This is the first page of your app.</Text>
-
-        <Link href="/workout/current" style={styles.link}>
-          Resume Current Workout
-        </Link>
-
-        <Link href="/workout/1" style={styles.link}>
-          Workout 1
-        </Link>
-
-        <Link href="/workout/1" style={styles.link}>
-          Workout 2
-        </Link>
-      </View>
+      <Link href="/workout/current" asChild>
+        <CustomButton title="Resume Workout" />
+      </Link>
+      <FlatList
+        data={workouts}
+        contentContainerStyle={{ gap: 8 }}
+        renderItem={({ item }) => <WorkoutListItem workout={item} />}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 }
@@ -27,26 +25,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
-    justifyContent: 'center',
-  },
-  main: {
-    gap: 14,
-    width: '100%',
-  },
-  subtitle: {
-    fontSize: 18,
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  link: {
-    fontSize: 18,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    color: '#2563EB',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    textAlign: 'center',
+    gap: 10,
+    padding: 10,
+    backgroundColor: 'transparent',
   },
 });
