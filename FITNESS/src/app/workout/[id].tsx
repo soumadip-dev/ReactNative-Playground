@@ -1,38 +1,42 @@
 import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { Text, View } from '@/components/general/Themed';
+import dummyWorkouts from '@/data/dummyWorkouts';
+import { FlatList } from 'react-native-gesture-handler';
+import WorkoutExerciseItem from '@/components/workouts/WorkoutExerciseItem';
+import dayjs from 'dayjs';
 
 export default function WorkoutScreen() {
   const { id } = useLocalSearchParams();
+  const workout = dummyWorkouts.find(w => w.id === id);
+
+  if (!workout) {
+    return <Text>Workout not found</Text>;
+  }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.title}>Workout Screen</Text>
-        <Text style={styles.id}>Workout {id}</Text>
-      </View>
-    </View>
+    <FlatList
+      data={workout.exercises}
+      contentContainerStyle={{ gap: 8, padding: 8 }}
+      renderItem={({ item }) => <WorkoutExerciseItem exercise={item} />}
+      ListHeaderComponent={
+        <>
+          <Text style={styles.title}>Workout details</Text>
+          <Text style={styles.date}>{dayjs(workout.createdAt).format('HH:mm dddd, D MMM')}</Text>
+        </>
+      }
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 24,
-  },
-  card: {
-    padding: 24,
-    borderRadius: 12,
-    borderWidth: 1,
-    alignItems: 'center',
-    gap: 8,
-  },
   title: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
-  id: {
+  date: {
     fontSize: 18,
+    marginBottom: 20,
   },
 });
