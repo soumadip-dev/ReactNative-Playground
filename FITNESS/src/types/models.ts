@@ -13,12 +13,12 @@ export type Exercise = {
 export type ExerciseSet = {
   id: string;
   exerciseId: string;
-  reps?: number;
-  weight?: number;
-  oneRM?: number;
+  reps?: number | null;
+  weight?: number | null;
+  oneRM?: number | null;
 };
 
-//* Additional types for nested structures
+// additional nested types
 export type WorkoutWithExercises = Workout & {
   exercises: ExerciseWithSets[];
 };

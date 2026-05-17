@@ -1,4 +1,5 @@
-export default [
+import { WorkoutWithExercises } from '@/types/models';
+const rawWorkouts = [
   {
     id: 'ea578a01-9581-4fc7-9423-8ad0eb7c5fc6',
     createdAt: '2024-09-23T13:17:46.393Z',
@@ -563,3 +564,11 @@ export default [
     exercises: [],
   },
 ];
+
+const workouts = rawWorkouts.map(workout => ({
+  ...workout,
+  createdAt: new Date(workout.createdAt),
+  finishedAt: new Date(workout.finishedAt),
+}));
+
+export default workouts;
