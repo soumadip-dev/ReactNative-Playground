@@ -45,6 +45,7 @@ yarn-error.*
 Network Trash Folder
 Temporary Items
 .apdisk
+expo-env.d.ts
 
 # local env files
 .env*.local

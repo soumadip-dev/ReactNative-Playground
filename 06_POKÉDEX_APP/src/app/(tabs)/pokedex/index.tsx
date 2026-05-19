@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from 'react-native';
 
@@ -14,8 +15,11 @@ import { Pokemon } from '@/types/pokemon';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 
+import Colors from '@/theme/colors';
+
 export default function Pokedex() {
   const router = useRouter();
+  const colorScheme = useColorScheme();
 
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +27,8 @@ export default function Pokedex() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
   const LIMIT = 30;
 
@@ -77,47 +83,55 @@ export default function Pokedex() {
 
       return (
         <TouchableOpacity
-          style={styles.item}
+          style={[
+            styles.item,
+            {
+              backgroundColor: theme.surface.primary,
+              borderColor: theme.surface.border,
+            },
+          ]}
           onPress={() => {
             router.push(`/pokedex/${id}`);
           }}
         >
           <Image source={{ uri: spriteUrl }} style={styles.sprite} />
 
-          <Text style={styles.name}>
+          <Text style={[styles.name, { color: theme.text.primary }]}>
             #{id} {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
           </Text>
         </TouchableOpacity>
       );
     },
-    [router]
+    [router, theme]
   );
 
   if (loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" />
+      <View style={[styles.centered, { backgroundColor: theme.background }]}>
+        <ActivityIndicator size="large" color={theme.tint} />
       </View>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>{error}</Text>
+      <View style={[styles.centered, { backgroundColor: theme.background }]}>
+        <Text style={[styles.errorText, { color: theme.text.error }]}>{error}</Text>
       </View>
     );
   }
 
   return (
     <FlatList
-      data={pokemon} // The array of items that the FlatList will display.
-      renderItem={renderItem} //Function that tells FlatList how to display each item.
-      keyExtractor={item => item.name} //Provides a unique key for every item.
-      contentContainerStyle={styles.list} // Applies styling to the inner container of the list.
-      onEndReached={loadMore} // Function called when the user scrolls near the bottom of the list.
-      onEndReachedThreshold={0.5} // Controls how early onEndReached should trigger.
-      ListFooterComponent={loadingMore ? <ActivityIndicator style={styles.footer} /> : null} //Adds a component at the bottom of the list.
+      data={pokemon}
+      renderItem={renderItem}
+      keyExtractor={item => item.name}
+      contentContainerStyle={[styles.list, { backgroundColor: theme.background }]}
+      onEndReached={loadMore}
+      onEndReachedThreshold={0.5}
+      ListFooterComponent={
+        loadingMore ? <ActivityIndicator style={styles.footer} color={theme.tint} /> : null
+      }
     />
   );
 }
@@ -137,9 +151,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
-    marginBottom: 8,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
+    marginBottom: 10,
+    borderRadius: 14,
+    borderWidth: 1,
   },
 
   sprite: {
@@ -150,7 +164,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     marginLeft: 12,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 
   footer: {
@@ -159,7 +173,6 @@ const styles = StyleSheet.create({
 
   errorText: {
     fontSize: 16,
-    color: '#E3350D',
     textAlign: 'center',
     paddingHorizontal: 20,
   },
