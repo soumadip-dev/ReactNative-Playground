@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from '@/components/general/Themed';
+import { View, Text } from '@/components/general/Themed';
 import { Modal, Pressable, StyleSheet } from 'react-native';
 import CustomButton from '../general/CustomButton';
 import { useState } from 'react';
@@ -14,13 +14,8 @@ type SelectExerciseModalProps = {
 
 export default function SelectExerciseModal({ onSelectExercise }: SelectExerciseModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState('');
   const tint = useThemeColor({}, 'tint');
   const textColor = useThemeColor({}, 'text');
-
-  const filteredExercises = exercises.filter(exercise =>
-    exercise.name.toLowerCase().includes(search.toLowerCase())
-  );
 
   return (
     <>
@@ -31,40 +26,33 @@ export default function SelectExerciseModal({ onSelectExercise }: SelectExercise
       />
       <Modal
         visible={isOpen}
-        transparent={true}
+        transparent
         animationType="fade"
         onRequestClose={() => setIsOpen(false)}
       >
-        <View style={[styles.overlay, { backgroundColor: 'rgba(0,0,0, 0.85)' }]}>
+        <View style={[styles.overlay, { backgroundColor: 'rgba(0,0,0,0.75)' }]}>
           <Card title="Select exercise" style={styles.modalContent}>
-            <View style={styles.searchContainer}>
-              <TextInput
-                placeholder="Search..."
-                value={search}
-                onChangeText={setSearch}
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: useThemeColor({}, 'textInputBackground'),
-                    color: textColor,
-                    borderRadius: 12,
-                  },
-                ]}
-                placeholderTextColor={textColor + '40'}
-              />
+            {/* Header */}
+            <View style={styles.header}>
+              <View />
               <Pressable
                 onPress={() => setIsOpen(false)}
                 style={({ pressed }) => [
                   styles.closeButton,
-                  pressed && { opacity: 0.6, transform: [{ scale: 0.95 }] },
+                  { borderColor: textColor + '15' },
+                  pressed && { opacity: 0.5, transform: [{ scale: 0.92 }] },
                 ]}
               >
-                <AntDesign name="close" size={22} color={textColor + '60'} />
+                <AntDesign name="close" size={16} color={textColor + '80'} />
               </Pressable>
             </View>
+
+            <View style={[styles.divider, { backgroundColor: textColor + '10' }]} />
+
             <FlatList
-              data={filteredExercises}
-              contentContainerStyle={{ gap: 12, paddingBottom: 20 }}
+              data={exercises}
+              keyExtractor={item => item.name}
+              contentContainerStyle={styles.listContent}
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) => (
                 <Pressable
@@ -74,16 +62,25 @@ export default function SelectExerciseModal({ onSelectExercise }: SelectExercise
                   }}
                   style={({ pressed }) => [
                     styles.exerciseItem,
-                    pressed && { opacity: 0.7, transform: [{ scale: 0.98 }] },
+                    { borderColor: textColor + '08', backgroundColor: textColor + '04' },
+                    pressed && {
+                      opacity: 0.65,
+                      transform: [{ scale: 0.97 }],
+                      backgroundColor: tint + '12',
+                    },
                   ]}
                 >
-                  <View style={[styles.exerciseDot, { backgroundColor: tint }]} />
+                  {/* Accent bar */}
+                  <View style={[styles.accentBar, { backgroundColor: tint }]} />
+
                   <View style={styles.exerciseContent}>
                     <Text style={[styles.exerciseName, { color: textColor }]}>{item.name}</Text>
-                    <Text style={[styles.muscleName, { color: textColor + '50' }]}>
+                    <Text style={[styles.muscleName, { color: textColor + '55' }]}>
                       {item.muscle}
                     </Text>
                   </View>
+
+                  <AntDesign name="right" size={12} color={textColor + '25'} />
                 </Pressable>
               )}
             />
@@ -100,54 +97,70 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   modalContent: {
     width: '90%',
     height: '80%',
+    borderRadius: 20,
   },
-  searchContainer: {
+
+  header: {
     flexDirection: 'row',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    gap: 12,
-    marginBottom: 16,
+    marginBottom: 14,
   },
-  input: {
-    flex: 1,
-    padding: 14,
-    fontSize: 16,
-  },
+
   closeButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    backgroundColor: 'rgba(128,128,128,0.07)',
+  },
+
+  divider: {
+    height: 1,
+    borderRadius: 1,
+    marginBottom: 16,
+  },
+  listContent: {
+    gap: 8,
+    paddingBottom: 24,
   },
   exerciseItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    borderWidth: 1,
   },
-  exerciseDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    opacity: 0.7,
+  accentBar: {
+    width: 3,
+    height: 36,
+    borderRadius: 2,
+    opacity: 0.75,
   },
+
   exerciseContent: {
     flex: 1,
-    gap: 4,
+    gap: 3,
   },
+
   exerciseName: {
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 15,
     letterSpacing: -0.3,
   },
+
   muscleName: {
     fontSize: 12,
-    letterSpacing: -0.2,
+    fontWeight: '500',
+    letterSpacing: 0.1,
+    textTransform: 'uppercase',
   },
 });
