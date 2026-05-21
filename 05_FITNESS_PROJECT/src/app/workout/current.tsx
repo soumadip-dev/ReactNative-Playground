@@ -12,6 +12,7 @@ import { useWorkout } from '@/store';
 export default function CurrentWorkoutScreen() {
   const currentWorkout = useWorkout(state => state.currentWorkout);
   const finshWorkout = useWorkout(state => state.finshWorkout);
+  const addExercise = useWorkout(state => state.addExercise);
 
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
@@ -39,17 +40,11 @@ export default function CurrentWorkoutScreen() {
         keyboardVerticalOffset={Platform.OS === 'ios' ? headerHeight : insets.bottom + 20}
       >
         <FlatList
-          data={[1, 2, 3]}
+          data={currentWorkout.exercises}
           contentContainerStyle={styles.flatListContent}
-          renderItem={() => <WorkoutExerciseItem />}
+          renderItem={({item}) => <WorkoutExerciseItem exercise={item}/>}
           ListHeaderComponent={<WorkoutHeader />}
-          ListFooterComponent={
-            <SelectExerciseModal
-              onSelectExercise={name => {
-                console.log('Exercise seleted: ', name);
-              }}
-            />
-          }
+          ListFooterComponent={<SelectExerciseModal onSelectExercise={name => addExercise(name)} />}
           keyboardShouldPersistTaps="handled"
         />
       </KeyboardAvoidingView>

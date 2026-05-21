@@ -1,12 +1,14 @@
 import { View, Text } from '@/components/general/Themed';
 import { StyleSheet } from 'react-native';
 import Card from '../general/Card';
-import { ExerciseSet } from '@/types/models';
+import { ExerciseSet, ExerciseWithSets } from '@/types/models';
 import SetItem from './SetItem';
 import CustomButton from '../general/CustomButton';
 import { useThemeColor } from '@/components/general/Themed';
 
-export default function WorkoutExerciseItem() {
+type WorkoutExerciseItemProps = { exercise: ExerciseWithSets };
+
+export default function WorkoutExerciseItem({ exercise }: WorkoutExerciseItemProps) {
   const tint = useThemeColor({}, 'tint');
   const textColor = useThemeColor({}, 'text');
 
@@ -26,14 +28,14 @@ export default function WorkoutExerciseItem() {
   ];
 
   return (
-    <Card title="Exercise">
+    <Card title={exercise.name}>
       <View style={[styles.header, { borderBottomColor: tint + '15' }]}>
         <Text style={[styles.setNumber, { color: textColor + '50' }]}>Set</Text>
         <Text style={[styles.setInfo, { color: textColor + '50' }]}>kg</Text>
         <Text style={[styles.setInfo, { color: textColor + '50' }]}>Reps</Text>
       </View>
       <View style={{ gap: 8 }}>
-        {sets.map((set, index) => (
+        {exercise.sets.map((set, index) => (
           <SetItem key={set.id} index={index} set={set} />
         ))}
       </View>
