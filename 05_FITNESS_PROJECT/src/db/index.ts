@@ -20,6 +20,17 @@ export const createExercisesTableQuery = `
     FOREIGN KEY (workout_id) REFERENCES workouts (id)
   );`;
 
+//* SQL queriy to create the sets table
+export const createSetsTableQuery = `
+  CREATE TABLE IF NOT EXISTS sets (
+    id TEXT PRIMARY KEY, 
+    exercise_id TEXT, 
+    reps INTEGER, 
+    weight REAL,
+    one_rm REAL,
+    FOREIGN KEY (exercise_id) REFERENCES exercises (id)
+  );`;
+
 export const getDB = async () => {
   if (db) return db;
 
@@ -31,6 +42,7 @@ export const getDB = async () => {
     }
     await db.execAsync(createWorkoutsTableQuery);
     await db.execAsync(createExercisesTableQuery);
+    await db.execAsync(createSetsTableQuery);
   });
   return db;
 };
