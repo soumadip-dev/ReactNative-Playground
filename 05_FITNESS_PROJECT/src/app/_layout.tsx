@@ -3,13 +3,21 @@ import { useColorScheme } from 'react-native';
 import { ThemeProvider, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import Colors from '@/constants/Colors';
 
+import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
+import * as SQLite from 'expo-sqlite';
+
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { dbName } from '@/db';
 
 DarkTheme.colors.primary = Colors.dark.tint;
 DefaultTheme.colors.primary = Colors.light.tint;
 
+const db = SQLite.openDatabaseSync(dbName);
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
+  useDrizzleStudio(db);
 
   return (
     <GestureHandlerRootView
