@@ -16,9 +16,6 @@ DefaultTheme.colors.primary = Colors.light.tint;
 
 const db = SQLite.openDatabaseSync(dbName);
 
-// remove letter
-getDB();
-
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
@@ -27,8 +24,8 @@ export default function RootLayout() {
   const loadWorkouts = useWorkout(state => state.loadWorkout);
 
   useEffect(() => {
-    loadWorkouts()
-  },[])
+    loadWorkouts();
+  }, []);
 
   return (
     <GestureHandlerRootView
