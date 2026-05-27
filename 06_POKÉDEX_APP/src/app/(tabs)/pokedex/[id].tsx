@@ -11,11 +11,11 @@ import {
   View,
 } from 'react-native';
 
-import type { PokemonDetails } from '@/types/pokemon';
 import { fetchPokemonDetails } from '@/lib/pokeapi';
+import type { PokemonDetails } from '@/types/pokemon';
 
-import Colors, { statColors, typeColors } from '@/theme/colors';
 import { statLabels } from '@/constants/pokemon';
+import Colors, { statColors, typeColors } from '@/theme/colors';
 
 export default function pokemonDetails() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -77,7 +77,9 @@ export default function pokemonDetails() {
       style={[styles.container, { backgroundColor: theme.background }]}
       contentContainerStyle={styles.contentContainer}
     >
-      <View style={[styles.header, { backgroundColor }]}>
+      <View
+        style={[styles.header, { backgroundColor, shadowColor: theme.shadow?.medium || '#000' }]}
+      >
         <Text style={[styles.pokemonId, { color: theme.transparent.white70 }]}>
           #{String(pokemon.id).padStart(3, '0')}
         </Text>
@@ -101,7 +103,15 @@ export default function pokemonDetails() {
       </View>
 
       <View style={styles.content}>
-        <View style={[styles.infoRow, { backgroundColor: theme.surface.primary }]}>
+        <View
+          style={[
+            styles.infoRow,
+            {
+              backgroundColor: theme.surface.primary,
+              shadowColor: theme.shadow?.default || '#000',
+            },
+          ]}
+        >
           <View style={styles.infoItem}>
             <Text style={[styles.infoValue, { color: theme.text.primary }]}>
               {(pokemon.weight / 10).toFixed(1)} kg
@@ -171,6 +181,7 @@ export default function pokemonDetails() {
                 styles.abilityBadge,
                 {
                   backgroundColor: theme.surface.primary,
+                  shadowColor: theme.shadow?.default || '#000',
                 },
               ]}
             >
@@ -189,7 +200,10 @@ export default function pokemonDetails() {
         </View>
 
         <Pressable
-          style={[styles.statsButton, { backgroundColor }]}
+          style={[
+            styles.statsButton,
+            { backgroundColor, shadowColor: theme.shadow?.medium || '#000' },
+          ]}
           onPress={() =>
             router.push({
               pathname: '/pokemon-stats-modal',
@@ -230,7 +244,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
@@ -299,7 +312,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 20,
     padding: 24,
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 12,
@@ -385,7 +397,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderRadius: 25,
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
@@ -413,7 +424,6 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     borderRadius: 20,
     alignItems: 'center',
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 6,

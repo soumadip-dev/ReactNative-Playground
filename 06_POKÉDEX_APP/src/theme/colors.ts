@@ -25,6 +25,11 @@ export default {
       black10: 'rgba(0,0,0,0.08)',
     },
 
+    shadow: {
+      default: 'rgba(0, 0, 0, 0.08)',
+      medium: 'rgba(0, 0, 0, 0.12)',
+    },
+
     tint: tintColorLight,
     gradientAccent: '#FF3B5C',
   },
@@ -50,6 +55,11 @@ export default {
       white25: 'rgba(255,255,255,0.25)',
       white70: 'rgba(255,255,255,0.7)',
       black10: 'rgba(0,0,0,0.25)',
+    },
+
+    shadow: {
+      default: 'rgba(255, 255, 255, 0.64)',
+      medium: 'rgb(247, 240, 240)',
     },
 
     tint: tintColorDark,

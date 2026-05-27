@@ -2,18 +2,20 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Platform,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
 
 import { fetchPokemonList, getPokemonId, getPokemonSpriteUrl } from '@/lib/pokeapi';
-
 import { Pokemon } from '@/types/pokemon';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Colors from '@/theme/colors';
 
@@ -27,6 +29,8 @@ export default function Pokedex() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
 
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
@@ -45,6 +49,14 @@ export default function Pokedex() {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const loadMore = async () => {
     if (loadingMore || !hasMore) return;
@@ -105,6 +117,21 @@ export default function Pokedex() {
     [router, theme]
   );
 
+  const filteredPokemon = useMemo(() => {
+    if (!debouncedQuery.trim()) return pokemon;
+
+    const query = debouncedQuery.toLowerCase().trim();
+
+    const filtered = pokemon.filter(pokemon => {
+      const id = getPokemonId(pokemon.url);
+      const name = pokemon.name.toLowerCase();
+
+      return name.includes(query) || id.toString().includes(query);
+    });
+
+    return filtered;
+  }, [pokemon, debouncedQuery]);
+
   if (loading) {
     return (
       <View style={[styles.centered, { backgroundColor: theme.background }]}>
@@ -122,58 +149,178 @@ export default function Pokedex() {
   }
 
   return (
-    <FlatList
-      data={pokemon}
-      renderItem={renderItem}
-      keyExtractor={item => item.name}
-      contentContainerStyle={[styles.list, { backgroundColor: theme.background }]}
-      onEndReached={loadMore}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={
-        loadingMore ? <ActivityIndicator style={styles.footer} color={theme.tint} /> : null
-      }
-    />
+    <View style={styles.container}>
+      {Platform.OS === 'ios' ? (
+        <TextInput
+          style={[
+            styles.searchInput,
+            {
+              color: theme.text.primary,
+              backgroundColor: theme.surface.primary,
+              borderColor: theme.surface.border,
+            },
+          ]}
+          placeholder="Search by name or number..."
+          placeholderTextColor="#999"
+          autoCapitalize="none"
+          autoCorrect={false}
+          clearButtonMode="while-editing"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      ) : (
+        <View
+          style={[
+            styles.searchContainer,
+            {
+              backgroundColor: theme.surface.primary,
+              borderColor: theme.surface.border,
+            },
+          ]}
+        >
+          <TextInput
+            style={[styles.input, { color: theme.text.primary }]}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Search by name or number..."
+            placeholderTextColor="#999"
+            autoCapitalize="none"
+          />
+
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <Ionicons name="close-circle" size={20} color="#999" />
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
+
+      <FlatList
+        data={filteredPokemon} // Array of Pokémon data displayed in the list
+        renderItem={renderItem} // Function responsible for rendering each Pokémon item
+        keyExtractor={item => item.name} // Provides a unique key for each list item
+        contentContainerStyle={[styles.list, { backgroundColor: theme.background }]} // Styles applied to the FlatList content container
+        onEndReached={loadMore} // Loads more Pokémon when the user scrolls near the end
+        onEndReachedThreshold={0.5}
+        // Triggers onEndReached when the user is within 50% of the bottom
+
+        ListFooterComponent={
+          loadingMore ? <ActivityIndicator style={styles.footer} color={theme.tint} /> : null
+        }
+        // Displays a loading spinner at the bottom while fetching more data
+
+        keyboardDismissMode="on-drag"
+        // Dismisses the keyboard automatically when the user scrolls the list
+
+        keyboardShouldPersistTaps="handled"
+        // Allows taps on list items while properly handling keyboard dismissal
+
+        ListEmptyComponent={<Text style={styles.emptyText}>No Pokémon found</Text>} // Component to display when the list is empty
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
 
+  searchInput: {
+    margin: 16,
+    marginBottom: 0,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    borderRadius: 14,
+    fontSize: 16,
+    borderWidth: 1.5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 3,
+    fontWeight: '500',
+  },
+
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    margin: 16,
+    marginBottom: 0,
+    paddingHorizontal: 16,
+    paddingVertical: 2,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+
+  input: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+
   list: {
     padding: 16,
+    paddingTop: 8,
   },
 
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    marginBottom: 10,
-    borderRadius: 14,
-    borderWidth: 1,
+    padding: 14,
+    marginBottom: 12,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
   },
 
   sprite: {
-    width: 50,
-    height: 50,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(0,0,0,0.03)',
   },
 
   name: {
-    fontSize: 16,
-    marginLeft: 12,
+    fontSize: 17,
+    marginLeft: 14,
     fontWeight: '600',
+    letterSpacing: -0.3,
   },
 
   footer: {
-    paddingVertical: 20,
+    paddingVertical: 24,
+  },
+
+  emptyText: {
+    textAlign: 'center',
+    color: '#666',
+    marginTop: 40,
+    fontSize: 16,
+    fontWeight: '500',
   },
 
   errorText: {
     fontSize: 16,
     textAlign: 'center',
     paddingHorizontal: 20,
+    fontWeight: '500',
   },
 });
