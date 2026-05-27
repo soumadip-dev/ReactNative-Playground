@@ -1,10 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
-  Image,
   Platform,
   StyleSheet,
   Text,
@@ -14,15 +13,15 @@ import {
   View,
 } from 'react-native';
 
+import PokemonListItem from '@/components/PokemonListItem';
 import { useFavorites } from '@/lib/favorites';
-import { fetchPokemonList, getPokemonId, getPokemonSpriteUrl } from '@/lib/pokeapi';
+import { fetchPokemonList, getPokemonId } from '@/lib/pokeapi';
 import Colors from '@/theme/colors';
-import { Pokemon } from '@/types/pokemon';
+import type { Pokemon } from '@/types/pokemon';
 
 const LIMIT = 30;
 
 export default function Pokedex() {
-  const router = useRouter();
   const colorScheme = useColorScheme();
 
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
@@ -120,41 +119,12 @@ export default function Pokedex() {
   const renderItem = useCallback(
     ({ item }: { item: Pokemon }) => {
       const id = getPokemonId(item.url);
-      const spriteUrl = getPokemonSpriteUrl(id);
-
       // Check if current Pokémon is favorite
       const isFav = isFavorite(Number(id));
 
-      return (
-        <TouchableOpacity
-          style={[
-            styles.item,
-            {
-              backgroundColor: theme.surface.primary,
-              borderColor: isFav ? '#FFD700' : theme.surface.border,
-            },
-            isFav && styles.favoriteItem,
-          ]}
-          onPress={() => {
-            router.push(`/pokedex/${id}`);
-          }}
-        >
-          <Image source={{ uri: spriteUrl }} style={styles.sprite} />
-
-          <Text style={[styles.name, { color: theme.text.primary }]}>
-            #{id} {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
-          </Text>
-
-          {/* Favorite Heart Icon */}
-          {isFav && (
-            <View style={styles.starContainer}>
-              <Ionicons name="heart" size={20} color="#ff8800" />
-            </View>
-          )}
-        </TouchableOpacity>
-      );
+      return <PokemonListItem item={item} theme={theme} isFavorite={isFav} />;
     },
-    [router, theme, isFavorite]
+    [theme, isFavorite]
   );
 
   //* Loading state
@@ -223,25 +193,17 @@ export default function Pokedex() {
       )}
 
       <FlatList
-        data={filteredPokemon} // Array of Pokémon data displayed in the list
-        renderItem={renderItem} // Function responsible for rendering each Pokémon item
-        keyExtractor={item => item.name} // Provides a unique key for each list item
-        contentContainerStyle={[styles.list, { backgroundColor: theme.background }]} // Styles applied to the FlatList content container
-        onEndReached={loadMore} // Loads more Pokémon when the user scrolls near the end
+        data={filteredPokemon}
+        renderItem={renderItem}
+        keyExtractor={item => item.name}
+        contentContainerStyle={[styles.list, { backgroundColor: theme.background }]}
+        onEndReached={loadMore}
         onEndReachedThreshold={0.5}
-        // Triggers onEndReached when the user is within 50% of the bottom
-
         ListFooterComponent={
           loadingMore ? <ActivityIndicator style={styles.footer} color={theme.tint} /> : null
         }
-        // Displays a loading spinner at the bottom while fetching more data
-
         keyboardDismissMode="on-drag"
-        // Dismisses the keyboard automatically when the user scrolls the list
-
         keyboardShouldPersistTaps="handled"
-        // Allows taps on list items while properly handling keyboard dismissal
-
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Ionicons name="search-outline" size={48} color={theme.text.secondary} />
@@ -252,7 +214,7 @@ export default function Pokedex() {
               Try searching by Pokémon name or number
             </Text>
           </View>
-        } // Component to display when the list is empty
+        }
       />
     </View>
   );
@@ -324,51 +286,6 @@ const styles = StyleSheet.create({
   list: {
     padding: 16,
     paddingTop: 8,
-  },
-
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-
-    marginBottom: 12,
-    padding: 14,
-
-    borderRadius: 16,
-    borderWidth: 1.5,
-
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-
-    elevation: 1,
-  },
-
-  // Favorite Pokémon card styling
-  favoriteItem: {
-    borderWidth: 1.5,
-  },
-
-  // Favorite heart container
-  starContainer: {
-    marginLeft: 'auto',
-    paddingLeft: 8,
-  },
-
-  sprite: {
-    width: 56,
-    height: 56,
-
-    borderRadius: 28,
-    backgroundColor: 'rgba(0,0,0,0.03)',
-  },
-
-  name: {
-    marginLeft: 14,
-
-    fontSize: 17,
-    fontWeight: '600',
-    letterSpacing: -0.3,
   },
 
   footer: {
