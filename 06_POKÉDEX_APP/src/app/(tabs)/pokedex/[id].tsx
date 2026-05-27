@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
@@ -11,25 +12,30 @@ import {
   View,
 } from 'react-native';
 
+import { statLabels } from '@/constants/pokemon';
+import { useFavorites } from '@/lib/favorites';
 import { fetchPokemonDetails } from '@/lib/pokeapi';
+import Colors, { statColors, typeColors } from '@/theme/colors';
 import type { PokemonDetails } from '@/types/pokemon';
 
-import { statLabels } from '@/constants/pokemon';
-import Colors, { statColors, typeColors } from '@/theme/colors';
-
-export default function pokemonDetails() {
+export default function PokemonDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+
   const router = useRouter();
   const colorScheme = useColorScheme();
 
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
+
+  const { isFavorite, toggleFavorite } = useFavorites();
+
   const [pokemon, setPokemon] = useState<PokemonDetails | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
-
   if (!id) return null;
 
+  // Fetch Pokémon details when screen loads
   useEffect(() => {
     if (!id) return;
 
@@ -45,6 +51,7 @@ export default function pokemonDetails() {
       });
   }, [id]);
 
+  // Loading state
   if (loading) {
     return (
       <View style={[styles.centered, { backgroundColor: theme.background }]}>
@@ -53,6 +60,7 @@ export default function pokemonDetails() {
     );
   }
 
+  // Error or empty state
   if (error || !pokemon) {
     return (
       <View style={[styles.centered, { backgroundColor: theme.background }]}>
@@ -78,11 +86,42 @@ export default function pokemonDetails() {
       contentContainerStyle={styles.contentContainer}
     >
       <View
-        style={[styles.header, { backgroundColor, shadowColor: theme.shadow?.medium || '#000' }]}
+        style={[
+          styles.header,
+          {
+            backgroundColor,
+            shadowColor: theme.shadow?.medium || '#000',
+          },
+        ]}
       >
-        <Text style={[styles.pokemonId, { color: theme.transparent.white70 }]}>
-          #{String(pokemon.id).padStart(3, '0')}
-        </Text>
+        <View style={styles.headerTop}>
+          <Text
+            style={[
+              styles.pokemonId,
+              {
+                color: theme.transparent?.white70 || 'rgba(255,255,255,0.7)',
+              },
+            ]}
+          >
+            #{String(pokemon.id).padStart(3, '0')}
+          </Text>
+
+          <Pressable
+            hitSlop={10}
+            onPress={() => {
+              toggleFavorite({
+                id: pokemon.id,
+                name: pokemon.name,
+              });
+            }}
+          >
+            <Ionicons
+              name={isFavorite(pokemon.id) ? 'heart' : 'heart-outline'}
+              size={28}
+              color={theme.white || '#FFFFFF'}
+            />
+          </Pressable>
+        </View>
 
         <Text style={styles.pokemonName}>
           {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
@@ -92,7 +131,12 @@ export default function pokemonDetails() {
           {pokemon.types.map(t => (
             <View
               key={t.type.name}
-              style={[styles.typeBadge, { backgroundColor: theme.transparent.white25 }]}
+              style={[
+                styles.typeBadge,
+                {
+                  backgroundColor: theme.transparent?.white25 || 'rgba(255,255,255,0.25)',
+                },
+              ]}
             >
               <Text style={styles.typeText}>{t.type.name.toUpperCase()}</Text>
             </View>
@@ -107,31 +151,37 @@ export default function pokemonDetails() {
           style={[
             styles.infoRow,
             {
-              backgroundColor: theme.surface.primary,
+              backgroundColor: theme.surface?.primary || '#FFFFFF',
               shadowColor: theme.shadow?.default || '#000',
             },
           ]}
         >
           <View style={styles.infoItem}>
-            <Text style={[styles.infoValue, { color: theme.text.primary }]}>
+            <Text style={[styles.infoValue, { color: theme.text?.primary || '#000000' }]}>
               {(pokemon.weight / 10).toFixed(1)} kg
             </Text>
 
-            <Text style={[styles.infoLabel, { color: theme.text.secondary }]}>Weight</Text>
+            <Text style={[styles.infoLabel, { color: theme.text?.secondary || '#666666' }]}>
+              Weight
+            </Text>
           </View>
 
-          <View style={[styles.divider, { backgroundColor: theme.surface.border }]} />
+          <View style={[styles.divider, { backgroundColor: theme.surface?.border || '#E0E0E0' }]} />
 
           <View style={styles.infoItem}>
-            <Text style={[styles.infoValue, { color: theme.text.primary }]}>
+            <Text style={[styles.infoValue, { color: theme.text?.primary || '#000000' }]}>
               {(pokemon.height / 10).toFixed(1)} m
             </Text>
 
-            <Text style={[styles.infoLabel, { color: theme.text.secondary }]}>Height</Text>
+            <Text style={[styles.infoLabel, { color: theme.text?.secondary || '#666666' }]}>
+              Height
+            </Text>
           </View>
         </View>
 
-        <Text style={[styles.sectionTitle, { color: theme.text.primary }]}>Base Stats</Text>
+        <Text style={[styles.sectionTitle, { color: theme.text?.primary || '#000000' }]}>
+          Base Stats
+        </Text>
 
         <View style={styles.statsContainer}>
           {pokemon.stats.map(stat => {
@@ -140,11 +190,11 @@ export default function pokemonDetails() {
 
             return (
               <View key={statName} style={styles.statRow}>
-                <Text style={[styles.statLabel, { color: theme.text.secondary }]}>
+                <Text style={[styles.statLabel, { color: theme.text?.secondary || '#666666' }]}>
                   {statLabels[statName] || statName.toUpperCase()}
                 </Text>
 
-                <Text style={[styles.statValue, { color: theme.text.primary }]}>
+                <Text style={[styles.statValue, { color: theme.text?.primary || '#000000' }]}>
                   {stat.base_stat}
                 </Text>
 
@@ -152,7 +202,7 @@ export default function pokemonDetails() {
                   style={[
                     styles.statBarContainer,
                     {
-                      backgroundColor: theme.surface.secondary,
+                      backgroundColor: theme.surface?.secondary || '#F0F0F0',
                     },
                   ]}
                 >
@@ -171,7 +221,9 @@ export default function pokemonDetails() {
           })}
         </View>
 
-        <Text style={[styles.sectionTitle, { color: theme.text.primary }]}>Abilities</Text>
+        <Text style={[styles.sectionTitle, { color: theme.text?.primary || '#000000' }]}>
+          Abilities
+        </Text>
 
         <View style={styles.abilitiesContainer}>
           {pokemon.abilities.map(a => (
@@ -180,12 +232,12 @@ export default function pokemonDetails() {
               style={[
                 styles.abilityBadge,
                 {
-                  backgroundColor: theme.surface.primary,
+                  backgroundColor: theme.surface?.primary || '#FFFFFF',
                   shadowColor: theme.shadow?.default || '#000',
                 },
               ]}
             >
-              <Text style={[styles.abilityText, { color: theme.text.primary }]}>
+              <Text style={[styles.abilityText, { color: theme.text?.primary || '#000000' }]}>
                 {a.ability.name
                   .split('-')
                   .map(w => w.charAt(0).toUpperCase() + w.slice(1))
@@ -193,7 +245,10 @@ export default function pokemonDetails() {
               </Text>
 
               {a.is_hidden && (
-                <Text style={[styles.hiddenLabel, { color: theme.text.secondary }]}> (Hidden)</Text>
+                <Text style={[styles.hiddenLabel, { color: theme.text?.secondary || '#666666' }]}>
+                  {' '}
+                  (Hidden)
+                </Text>
               )}
             </View>
           ))}
@@ -202,7 +257,10 @@ export default function pokemonDetails() {
         <Pressable
           style={[
             styles.statsButton,
-            { backgroundColor, shadowColor: theme.shadow?.medium || '#000' },
+            {
+              backgroundColor,
+              shadowColor: theme.shadow?.medium || '#000',
+            },
           ]}
           onPress={() =>
             router.push({
@@ -223,100 +281,141 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  contentContainer: {
+    paddingBottom: 70,
+  },
+
   centered: {
     flex: 1,
-    justifyContent: 'center',
+
     alignItems: 'center',
+    justifyContent: 'center',
+
     paddingHorizontal: 20,
   },
 
   errorText: {
-    fontSize: 16,
-    textAlign: 'center',
     paddingHorizontal: 20,
+
+    fontSize: 16,
+
+    textAlign: 'center',
     opacity: 0.9,
   },
 
   header: {
-    paddingTop: 40,
-    paddingBottom: 80,
-    paddingHorizontal: 24,
     alignItems: 'center',
+
+    paddingTop: 60,
+    paddingBottom: 40,
+    paddingHorizontal: 24,
+
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
+
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
+
     elevation: 8,
+  },
+
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+
+    width: '100%',
+
+    marginBottom: 8,
   },
 
   pokemonId: {
     fontSize: 16,
     fontWeight: '600',
-    alignSelf: 'flex-end',
     letterSpacing: 1,
   },
 
   pokemonName: {
+    marginTop: 8,
+    marginBottom: 16,
+
     fontSize: 36,
     fontWeight: 'bold',
+    letterSpacing: 0.5,
+
     color: '#FFFFFF',
-    marginTop: 8,
+    textAlign: 'center',
+
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
-    letterSpacing: 0.5,
   },
 
   typesContainer: {
     flexDirection: 'row',
-    marginTop: 16,
+    justifyContent: 'center',
+
+    marginTop: 0,
+    marginBottom: 24,
+
     gap: 12,
   },
 
   typeBadge: {
     paddingHorizontal: 18,
     paddingVertical: 8,
+
     borderRadius: 25,
+
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+
     elevation: 2,
   },
 
   typeText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
     fontSize: 13,
+    fontWeight: '700',
     letterSpacing: 0.5,
+
+    color: '#FFFFFF',
   },
 
   artwork: {
-    width: 240,
-    height: 240,
-    marginTop: 24,
+    width: 200,
+    height: 200,
+
+    marginTop: 0,
+
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
+
     elevation: 5,
   },
 
   content: {
+    marginTop: -30,
     padding: 24,
-    marginTop: -40,
   },
 
   infoRow: {
     flexDirection: 'row',
-    borderRadius: 20,
+
+    marginBottom: 28,
     padding: 24,
+
+    borderRadius: 20,
+
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 12,
+
     elevation: 6,
-    marginBottom: 28,
   },
 
   infoItem: {
@@ -325,15 +424,17 @@ const styles = StyleSheet.create({
   },
 
   infoValue: {
+    marginBottom: 6,
+
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 6,
   },
 
   infoLabel: {
+    marginTop: 4,
+
     fontSize: 13,
     fontWeight: '500',
-    marginTop: 4,
     letterSpacing: 0.3,
   },
 
@@ -343,9 +444,10 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
+    marginBottom: 20,
+
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
     letterSpacing: -0.3,
   },
 
@@ -356,11 +458,13 @@ const styles = StyleSheet.create({
   statRow: {
     flexDirection: 'row',
     alignItems: 'center',
+
     marginBottom: 14,
   },
 
   statLabel: {
     width: 65,
+
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 0.2,
@@ -368,17 +472,21 @@ const styles = StyleSheet.create({
 
   statValue: {
     width: 40,
+
+    marginRight: 12,
+
     fontSize: 14,
     fontWeight: 'bold',
+
     textAlign: 'right',
-    marginRight: 12,
   },
 
   statBarContainer: {
     flex: 1,
     height: 8,
-    borderRadius: 4,
+
     overflow: 'hidden',
+    borderRadius: 4,
   },
 
   statBar: {
@@ -389,17 +497,22 @@ const styles = StyleSheet.create({
   abilitiesContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+
     gap: 10,
   },
 
   abilityBadge: {
     flexDirection: 'row',
+
     paddingHorizontal: 18,
     paddingVertical: 12,
+
     borderRadius: 25,
+
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
+
     elevation: 1,
   },
 
@@ -410,30 +523,32 @@ const styles = StyleSheet.create({
   },
 
   hiddenLabel: {
+    marginLeft: 2,
+
     fontSize: 12,
     fontStyle: 'italic',
-    marginLeft: 2,
-  },
-
-  contentContainer: {
-    paddingBottom: 70,
   },
 
   statsButton: {
+    alignItems: 'center',
+
     marginTop: 32,
     paddingVertical: 18,
+
     borderRadius: 20,
-    alignItems: 'center',
+
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
+
     elevation: 5,
   },
 
   statsButtonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
     fontSize: 16,
+    fontWeight: 'bold',
     letterSpacing: 0.5,
+
+    color: '#FFFFFF',
   },
 });

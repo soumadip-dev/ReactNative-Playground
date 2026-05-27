@@ -14,7 +14,7 @@ export default function TabLayout() {
       <NativeTabs.Trigger name="favorites">
         <NativeTabs.Trigger.Icon
           sf={{ default: 'heart', selected: 'heart.fill' }}
-          drawable="star_on"
+          md="favorite"
           selectedColor="#E3350D"
         />
         <NativeTabs.Trigger.Label>Favorites</NativeTabs.Trigger.Label>

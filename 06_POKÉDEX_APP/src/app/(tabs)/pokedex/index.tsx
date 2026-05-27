@@ -1,3 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -11,31 +14,49 @@ import {
   View,
 } from 'react-native';
 
+import { useFavorites } from '@/lib/favorites';
 import { fetchPokemonList, getPokemonId, getPokemonSpriteUrl } from '@/lib/pokeapi';
-import { Pokemon } from '@/types/pokemon';
-import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-
 import Colors from '@/theme/colors';
+import { Pokemon } from '@/types/pokemon';
+
+const LIMIT = 30;
 
 export default function Pokedex() {
   const router = useRouter();
   const colorScheme = useColorScheme();
 
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
+
+  const { isFavorite, refresh } = useFavorites();
+
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
-  const [offset, setOffset] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
+
+  const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+
   const [error, setError] = useState<string | null>(null);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
 
-  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
 
-  const LIMIT = 30;
+  //* Debounce search input for better performance
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
 
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  //* Initial Pokémon fetch
   useEffect(() => {
     fetchPokemonList(LIMIT, 0)
       .then(data => {
@@ -50,14 +71,7 @@ export default function Pokedex() {
       });
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(searchQuery);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
+  //* Load more Pokémon for infinite scrolling
   const loadMore = async () => {
     if (loadingMore || !hasMore) return;
 
@@ -88,10 +102,28 @@ export default function Pokedex() {
     }
   };
 
+  //* Filter Pokémon based on search query
+  const filteredPokemon = useMemo(() => {
+    if (!debouncedQuery.trim()) return pokemon;
+
+    const query = debouncedQuery.toLowerCase().trim();
+
+    return pokemon.filter(pokemon => {
+      const id = getPokemonId(pokemon.url);
+      const name = pokemon.name.toLowerCase();
+
+      return name.includes(query) || id.toString().includes(query);
+    });
+  }, [pokemon, debouncedQuery]);
+
+  //* Render each Pokémon card
   const renderItem = useCallback(
     ({ item }: { item: Pokemon }) => {
       const id = getPokemonId(item.url);
       const spriteUrl = getPokemonSpriteUrl(id);
+
+      // Check if current Pokémon is favorite
+      const isFav = isFavorite(Number(id));
 
       return (
         <TouchableOpacity
@@ -99,8 +131,9 @@ export default function Pokedex() {
             styles.item,
             {
               backgroundColor: theme.surface.primary,
-              borderColor: theme.surface.border,
+              borderColor: isFav ? '#FFD700' : theme.surface.border,
             },
+            isFav && styles.favoriteItem,
           ]}
           onPress={() => {
             router.push(`/pokedex/${id}`);
@@ -111,27 +144,20 @@ export default function Pokedex() {
           <Text style={[styles.name, { color: theme.text.primary }]}>
             #{id} {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
           </Text>
+
+          {/* Favorite Heart Icon */}
+          {isFav && (
+            <View style={styles.starContainer}>
+              <Ionicons name="heart" size={20} color="#ff8800" />
+            </View>
+          )}
         </TouchableOpacity>
       );
     },
-    [router, theme]
+    [router, theme, isFavorite]
   );
 
-  const filteredPokemon = useMemo(() => {
-    if (!debouncedQuery.trim()) return pokemon;
-
-    const query = debouncedQuery.toLowerCase().trim();
-
-    const filtered = pokemon.filter(pokemon => {
-      const id = getPokemonId(pokemon.url);
-      const name = pokemon.name.toLowerCase();
-
-      return name.includes(query) || id.toString().includes(query);
-    });
-
-    return filtered;
-  }, [pokemon, debouncedQuery]);
-
+  //* Loading state
   if (loading) {
     return (
       <View style={[styles.centered, { backgroundColor: theme.background }]}>
@@ -140,6 +166,7 @@ export default function Pokedex() {
     );
   }
 
+  //* Error state
   if (error) {
     return (
       <View style={[styles.centered, { backgroundColor: theme.background }]}>
@@ -160,13 +187,13 @@ export default function Pokedex() {
               borderColor: theme.surface.border,
             },
           ]}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
           placeholder="Search by name or number..."
           placeholderTextColor="#999"
           autoCapitalize="none"
           autoCorrect={false}
           clearButtonMode="while-editing"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
         />
       ) : (
         <View
@@ -215,7 +242,17 @@ export default function Pokedex() {
         keyboardShouldPersistTaps="handled"
         // Allows taps on list items while properly handling keyboard dismissal
 
-        ListEmptyComponent={<Text style={styles.emptyText}>No Pokémon found</Text>} // Component to display when the list is empty
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Ionicons name="search-outline" size={48} color={theme.text.secondary} />
+
+            <Text style={[styles.emptyText, { color: theme.text.primary }]}>No Pokémon found</Text>
+
+            <Text style={[styles.emptySubtext, { color: theme.text.secondary }]}>
+              Try searching by Pokémon name or number
+            </Text>
+          </View>
+        } // Component to display when the list is empty
       />
     </View>
   );
@@ -228,46 +265,58 @@ const styles = StyleSheet.create({
 
   centered: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
   },
 
   searchInput: {
     margin: 16,
     marginBottom: 0,
+
     paddingHorizontal: 18,
     paddingVertical: 14,
+
     borderRadius: 14,
-    fontSize: 16,
     borderWidth: 1.5,
+
+    fontSize: 16,
+    fontWeight: '500',
+
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 6,
+
     elevation: 3,
-    fontWeight: '500',
   },
 
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+
     margin: 16,
     marginBottom: 0,
+
     paddingHorizontal: 16,
     paddingVertical: 2,
+
     borderRadius: 14,
     borderWidth: 1.5,
+
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 5,
+
     elevation: 2,
   },
 
   input: {
     flex: 1,
-    paddingVertical: 12,
+
     paddingHorizontal: 4,
+    paddingVertical: 12,
+
     fontSize: 16,
     fontWeight: '500',
   },
@@ -280,27 +329,44 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 14,
+
     marginBottom: 12,
+    padding: 14,
+
     borderRadius: 16,
     borderWidth: 1.5,
+
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
+
     elevation: 1,
+  },
+
+  // Favorite Pokémon card styling
+  favoriteItem: {
+    borderWidth: 1.5,
+  },
+
+  // Favorite heart container
+  starContainer: {
+    marginLeft: 'auto',
+    paddingLeft: 8,
   },
 
   sprite: {
     width: 56,
     height: 56,
+
     borderRadius: 28,
     backgroundColor: 'rgba(0,0,0,0.03)',
   },
 
   name: {
-    fontSize: 17,
     marginLeft: 14,
+
+    fontSize: 17,
     fontWeight: '600',
     letterSpacing: -0.3,
   },
@@ -309,18 +375,39 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
 
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    paddingVertical: 60,
+    paddingHorizontal: 20,
+  },
+
   emptyText: {
-    textAlign: 'center',
-    color: '#666',
     marginTop: 40,
+
     fontSize: 16,
     fontWeight: '500',
+
+    textAlign: 'center',
+    color: '#666',
+  },
+
+  emptySubtext: {
+    marginTop: 8,
+
+    fontSize: 14,
+    lineHeight: 20,
+
+    textAlign: 'center',
   },
 
   errorText: {
-    fontSize: 16,
-    textAlign: 'center',
     paddingHorizontal: 20,
+
+    fontSize: 16,
     fontWeight: '500',
+
+    textAlign: 'center',
   },
 });
