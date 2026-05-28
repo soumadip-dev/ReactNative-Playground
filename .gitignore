@@ -47,6 +47,8 @@ Temporary Items
 .apdisk
 expo-env.d.ts
 
+TEMP-56
+
 # local env files
 .env*.local
 
