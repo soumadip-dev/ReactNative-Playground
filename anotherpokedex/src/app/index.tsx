@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   Text,
@@ -6,9 +7,35 @@ import {
   ActivityIndicator,
   View,
   Image,
-  SafeAreaView,
-  StatusBar,
+  Pressable,
 } from 'react-native';
+
+export const pokemonTypeColors: Record<string, string> = {
+  grass: '#78C850',
+  fire: '#F08030',
+  water: '#6890F0',
+  electric: '#F8D030',
+  psychic: '#F85888',
+  ice: '#98D8D8',
+  dragon: '#7038F8',
+  dark: '#705848',
+  fairy: '#EE99AC',
+  normal: '#A8A878',
+  fighting: '#C03028',
+  flying: '#A890F0',
+  poison: '#A040A0',
+  ground: '#E0C068',
+  rock: '#B8A038',
+  bug: '#A8B820',
+  ghost: '#705898',
+  steel: '#B8B8D0',
+};
+
+export function getCardColor(typeOrTypes: string | string[]) {
+  const primaryType = Array.isArray(typeOrTypes) ? typeOrTypes[0] : typeOrTypes;
+
+  return pokemonTypeColors[primaryType?.toLowerCase()] || '#6B7280';
+}
 
 type Pokemon = {
   name: string;
@@ -30,6 +57,8 @@ export default function Index() {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     fetchPokemon();
@@ -76,31 +105,6 @@ export default function Index() {
     }
   }
 
-  function getCardColor(types: string[]) {
-    const typeColors: Record<string, string> = {
-      grass: '#D7F5E9',
-      fire: '#FFE5D9',
-      water: '#DCEEFF',
-      electric: '#FFF4CC',
-      psychic: '#FCE1E4',
-      ice: '#D9F3FF',
-      dragon: '#DCD6F7',
-      dark: '#CFD8DC',
-      fairy: '#FFD6E8',
-      normal: '#E5E7EB',
-      fighting: '#F5CBA7',
-      flying: '#E0E7FF',
-      poison: '#E9D5FF',
-      ground: '#EED6C4',
-      rock: '#D7CCC8',
-      bug: '#E6EE9C',
-      ghost: '#D1C4E9',
-      steel: '#CFD8DC',
-    };
-
-    return typeColors[types[0]] || '#F3F4F6';
-  }
-
   if (loading) {
     return (
       <View style={styles.centerContainer}>
@@ -119,7 +123,13 @@ export default function Index() {
   }
 
   const renderItem = ({ item }: { item: Pokemon }) => (
-    <View
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: '/details',
+          params: { name: item.name },
+        })
+      }
       style={[
         styles.card,
         {
@@ -142,7 +152,7 @@ export default function Index() {
           </View>
         ))}
       </View>
-    </View>
+    </Pressable>
   );
 
   return (
@@ -194,7 +204,6 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 16,
     alignItems: 'center',
-    position: 'relative',
 
     shadowColor: '#000',
     shadowOffset: {
