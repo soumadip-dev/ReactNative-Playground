@@ -231,3 +231,22 @@ By default, all sides are protected.
 ```jsx
 <SafeAreaView edges={['top', 'bottom']}>{/* Content here */}</SafeAreaView>
 ```
+
+---
+
+navigation pattern
+|
+|- Stack
+|
+|- Tabs
+|
+|- Drawer
+|
+|- Model
+
+React Navigatio : Component based routing system
+Expo Router: File based routing
+
+why react navigation if we already have expo router because it is core navigation understanding it give in depth idea of the navigation of the react native app. because expo under the whood using this navigation so we can understand properly how file based routing working under the whood.
+
+---
