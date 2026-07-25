@@ -1,50 +1,63 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Pressable, Text } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
 import HomeScreen from './screens/HomeScreen';
+import DetailsScreen from './screens/DetailsScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import Details from './screens/Details';
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
-function RootStack() {
+function TabNavigator() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: '#f4511e',
+        tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {
+          backgroundColor: '#fff',
+          borderTopWidth: 1,
+          borderTopColor: '#eee',
+          paddingBottom: 5,
+        },
+        headerStyle: {
+          backgroundColor: '#222',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}
+    >
+      <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={({ navigation }) => ({
-          title: 'My Home',
-          headerStyle: {
-            backgroundColor: '#007AFF',
-          },
-          headerTitleStyle: {
-            color: 'white',
-            fontWeight: 'bold',
-          },
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Profile')}
-              style={{
-                marginRight: 12,
-                borderRadius: 8,
-                borderWidth: 1,
-                borderColor: 'white',
-                padding: 8,
-                backgroundColor: '#A5C9C9',
-              }}
-            >
-              <Text style={{ color: 'black', fontWeight: '600' }}>Profile</Text>
-            </Pressable>
-          ),
-        })}
+        options={{
+          title: 'Home ',
+          tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
+        }}
       />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="Details" component={Details} />
-    </Stack.Navigator>
+
+      <Tab.Screen
+        name="Details"
+        component={DetailsScreen}
+        options={{
+          title: 'Details ',
+          tabBarIcon: ({ color, size }) => <Ionicons name="list" size={size} color={color} />,
+        }}
+      />
+
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} />,
+        }}
+      />
+    </Tab.Navigator>
   );
 }
 
 export default function App() {
-  return <RootStack />;
+  return <TabNavigator />;
 }
