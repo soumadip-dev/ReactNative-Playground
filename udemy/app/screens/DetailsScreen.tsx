@@ -1,14 +1,27 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 
-const DetailsScreen = () => {
+const Details = () => {
   return (
-    <View>
-      <Text>DetailsScreen</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Details Screen</Text>
     </View>
   );
 };
 
-export default DetailsScreen;
+export default Details;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+    gap: 12,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+});

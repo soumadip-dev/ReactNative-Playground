@@ -287,8 +287,59 @@ return (
 </Button>
 )
 }
+```
 
 ### Bottom Tabs Navigator
-A simple tab bar on the bottom of the screen that lets you switch between different routes
----
+
+A simple tab bar on the bottom of the screen that lets you switch between different routes.
+
+```tsx
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+const Tab = createBottomTabNavigator();
+
+function TabNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: '',
+        tabBarInactiveTintColor: '',
+        tabBarStyle: {},
+        headerStyle: {},
+        headerTintColor: '',
+        headerTitleStyle: {},
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          title: 'Home ',
+          tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
+        }}
+      />
+      . .
+    </Tab.Navigator>
+  );
+}
 ```
+
+## Modal
+
+modal is a screen that overlays the app content to provide important information or propmpt the user for a descsion.
+Since they are purposefully interrupted make sure to use them only when necessary
+
+```tsx
+<Stack.Screen
+  name="Modal"
+  component={ModalScreen}
+  options={{
+    presentation: 'modal', // this is the important part
+  }}
+/>
+```
+
+## Drawer
+
+Drawer Navigator renders a navigation drawer on the side of the screen which can be opened and closed via gestures.
+
+---

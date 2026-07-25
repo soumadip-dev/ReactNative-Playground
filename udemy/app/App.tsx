@@ -1,63 +1,33 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from './screens/HomeScreen';
-import DetailsScreen from './screens/DetailsScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import DetailsScreen from './screens/DetailsScreen';
+import ModalScreen from './screens/model-screen';
 
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-function TabNavigator() {
+function RootStack() {
   return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarActiveTintColor: '#f4511e',
-        tabBarInactiveTintColor: 'gray',
-        tabBarStyle: {
-          backgroundColor: '#fff',
-          borderTopWidth: 1,
-          borderTopColor: '#eee',
-          paddingBottom: 5,
-        },
-        headerStyle: {
-          backgroundColor: '#222',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Details" component={DetailsScreen} />
+      {/* Modal screen */}
+      <Stack.Screen
+        name="Modal"
+        component={ModalScreen}
         options={{
-          title: 'Home ',
-          tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
+          presentation: 'modal',
+          title: 'Team member',
+          headerStyle: { backgroundColor: '#6200ee' },
+          headerTintColor: '#fff',
         }}
       />
-
-      <Tab.Screen
-        name="Details"
-        component={DetailsScreen}
-        options={{
-          title: 'Details ',
-          tabBarIcon: ({ color, size }) => <Ionicons name="list" size={size} color={color} />,
-        }}
-      />
-
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} />,
-        }}
-      />
-    </Tab.Navigator>
+    </Stack.Navigator>
   );
 }
 
 export default function App() {
-  return <TabNavigator />;
+  return <RootStack />;
 }
