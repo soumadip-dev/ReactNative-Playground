@@ -249,4 +249,46 @@ Expo Router: File based routing
 
 why react navigation if we already have expo router because it is core navigation understanding it give in depth idea of the navigation of the react native app. because expo under the whood using this navigation so we can understand properly how file based routing working under the whood.
 
+# React Navigation normal reacta native
+
+### stack
+
+Stack Navigator provides a way for your app to transition between screens where each new screen is placed on top of a stack.
+
+```tsx
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+const Stack = createNativeStackNavigator();
+
+function RootStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+    </Stack.Navigator>
+  );
+}
+```
+
+(It is available till Expo SDK 54).
+Now we can use `Link` and `useNavigation` to navigate between screens.
+
+```tsx
+import { Link, useNavigation } from '@react-navigation/native';
+
+const HomeScreen = () => {
+    const navigation = useNavigation<any>();
+
+return (
+  <Link to={{ screen: 'Profile' }}>Go to Profile</Link>
+<Button
+  onPress={() => navigation.navigate('Details')}
+>
+  Go to Details
+</Button>
+)
+}
+
+### Bottom Tabs Navigator
+A simple tab bar on the bottom of the screen that lets you switch between different routes
 ---
+```

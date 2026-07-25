@@ -15,7 +15,16 @@ const HomeScreen = () => {
       </Link>
 
       <View style={styles.button}>
-        <Button onPress={() => navigation.navigate('Details')}>Go to Details</Button>
+        <Button
+          onPress={() =>
+            navigation.navigate('Details', {
+              itemId: 42,
+              otherParam: 'some other param',
+            })
+          }
+        >
+          Go to Details
+        </Button>
       </View>
 
       <View style={styles.button}>
