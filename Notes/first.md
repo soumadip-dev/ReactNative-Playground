@@ -342,4 +342,18 @@ Since they are purposefully interrupted make sure to use them only when necessar
 
 Drawer Navigator renders a navigation drawer on the side of the screen which can be opened and closed via gestures.
 
+```tsx
+import { createDrawerNavigator } from '@react-navigation/drawer';
+const Drawer = createDrawerNavigator();
+
+function MyDrawer() {
+  return (
+    <Drawer.Navigator>
+      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
+    </Drawer.Navigator>
+  );
+}
+```
+
 ---
