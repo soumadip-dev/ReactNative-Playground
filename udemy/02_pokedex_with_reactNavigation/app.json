@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "02_pokedex_with__reactnavigation",
-    "slug": "02_pokedex_with__reactnavigation",
+    "name": "pokedex",
+    "slug": "pokedex",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
