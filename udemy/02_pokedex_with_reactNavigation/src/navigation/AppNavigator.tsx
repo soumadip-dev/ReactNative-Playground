@@ -3,9 +3,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 
-import HomeScreen from '../../app/screens/Home';
-import PokemonDetailScreen from '../../app/screens/PokemonDetail';
-import PokemonListScreen from '../../app/screens/PokemonList';
+import HomeScreen from '../app/screens/Home';
+import PokemonDetailScreen from '../app/screens/PokemonDetail';
+import PokemonListScreen from '../app/screens/PokemonList';
 import { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

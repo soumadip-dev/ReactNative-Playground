@@ -7,7 +7,7 @@ A hands-on playground for learning React Native with Expo, focused on building c
 </p>
 
 <div align="center">
-  <img src="./01_BUSINESS_CARD_PROJECT/assets/banner.png" alt="Banner" width="900">
+  <img src="./01_BUSINESS_CARD_PROJECT/assets/banner.jpg" alt="Banner" width="900">
 </div>
 
 ---

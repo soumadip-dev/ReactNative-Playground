@@ -1,11 +1,12 @@
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { PokemonDetails } from '../api/pokemon';
 
 // Define all screen names and the parameters each screen expects
 export type RootStackParamList = {
   Home: undefined;
   PokemonList: undefined;
-  PokemonDetails: { pokemon: any }; //TODO: Fix letter
+  PokemonDetails: { pokemon: PokemonDetails };
 };
 
 // Navigation props for navigating between screens
