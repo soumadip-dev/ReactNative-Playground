@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { getPokemonByType, getPokemonList, PokemonDetails, PokemonRef } from '@/src/api/pokemon';
 
@@ -64,7 +64,7 @@ const HomeScreen = () => {
     return masterList.filter(pokemon => pokemon.name.includes(searchText.toLowerCase()));
   }, [masterList, searchText]);
 
-  //* returns only the Pokémon that should currently be visible.
+  //* Returns only the Pokémon that should currently be visible.
   const displayList = useMemo(() => {
     return filteredList.slice(0, page * PAGE_SIZE);
   }, [filteredList, page]);
@@ -135,8 +135,8 @@ const styles = StyleSheet.create({
   },
 
   searchContainer: {
-    padding: 16,
-    paddingBottom: 0,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
 
   filterContainer: {
@@ -150,7 +150,8 @@ const styles = StyleSheet.create({
   },
 
   listContent: {
-    padding: 16,
+    paddingHorizontal: 16,
     paddingTop: 8,
+    paddingBottom: 16,
   },
 });

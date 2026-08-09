@@ -1,5 +1,6 @@
-import { Image, Platform, StyleSheet, Text, View, StatusBar as RNStatusBar } from 'react-native';
+import { Image, Platform, StatusBar as RNStatusBar, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { COLORS } from '../constants/colors';
 
 interface AppHeaderProps {
@@ -21,8 +22,10 @@ const AppHeader = ({ title, showLogo = false, rightAction }: AppHeaderProps) => 
                 resizeMode="contain"
               />
             )}
+
             <Text style={styles.title}>{title}</Text>
           </View>
+
           {rightAction && <View style={styles.right}>{rightAction}</View>}
         </View>
       </SafeAreaView>
@@ -39,6 +42,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
   },
+
   content: {
     height: 60,
     paddingHorizontal: 16,
@@ -46,19 +50,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
+
   logo: {
     width: 32,
     height: 32,
   },
+
   title: {
     color: COLORS.text,
     fontSize: 24,
     fontWeight: 'bold',
   },
+
   right: {},
 });

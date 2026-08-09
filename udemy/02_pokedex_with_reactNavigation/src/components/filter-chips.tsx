@@ -1,5 +1,6 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+
 import { COLORS } from '../constants/colors';
 import { getTypeColor, POKEMON_TYPES } from '../constants/types';
 
@@ -33,7 +34,13 @@ const FilterChips = ({ selectedType, onSelectType }: FilterChipsProps) => {
         return (
           <TouchableOpacity
             key={type}
-            style={[styles.chip, isSelected && { backgroundColor: color, borderColor: color }]}
+            style={[
+              styles.chip,
+              isSelected && {
+                backgroundColor: color,
+                borderColor: color,
+              },
+            ]}
             onPress={() => onSelectType(isSelected ? null : (type as string))}
           >
             <Text style={[styles.text, isSelected && styles.activeText]}>
@@ -54,23 +61,27 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 8,
   },
+
   chip: {
     paddingHorizontal: 16,
     paddingVertical: 8,
+    marginRight: 8,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: COLORS.border,
     backgroundColor: 'transparent',
-    marginRight: 8,
   },
+
   activeChip: {
     borderColor: 'transparent',
   },
+
   text: {
     color: COLORS.subtext,
     fontSize: 14,
     fontWeight: '600',
   },
+
   activeText: {
     color: COLORS.background,
     fontWeight: 'bold',
