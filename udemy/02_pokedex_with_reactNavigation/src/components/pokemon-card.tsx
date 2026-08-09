@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { PokemonDetails } from '../api/pokemon';
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { getPokemonDetails, PokemonDetails } from '../api/pokemon';
 import { COLORS } from '../constants/colors';
+import { TypeBadge } from './type-badge';
 
 interface PokemonCardProps {
   name: string;
@@ -9,11 +10,66 @@ interface PokemonCardProps {
   onPress: (detail: PokemonDetails) => void;
 }
 
-const PokemonCard = () => {
+const PokemonCard = ({ name, url, onPress }: PokemonCardProps) => {
+  const [details, setDetails] = useState<PokemonDetails | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const idStr = url.split('/').filter(Boolean).pop();
+  const id = idStr ? parseInt(idStr) : 0;
+
+  const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchDetails = async () => {
+      try {
+        const details = await getPokemonDetails(id);
+        if (isMounted) {
+          setDetails(details);
+          setLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchDetails();
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  const handlePress = () => {
+    if (details) {
+      onPress(details);
+    }
+  };
+
   return (
-    <View>
-      <Text>PokemonCard</Text>
-    </View>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={handlePress}
+      disabled={loading}
+      activeOpacity={0.8}
+    >
+      <View style={styles.imageContainer}>
+        <Image source={{ uri: imageUrl }} style={styles.image} resizeMode="contain" />
+      </View>
+      <View style={styles.info}>
+        <Text style={styles.id}>#{String(id).padStart(3, '0')}</Text>
+        <Text style={styles.name}>{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
+        <View style={styles.types}>
+          {loading ? (
+            <ActivityIndicator size="small" color={COLORS.subtext} />
+          ) : (
+            details?.types.map((type, index) => <TypeBadge key={index} type={type.type.name} />)
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 
