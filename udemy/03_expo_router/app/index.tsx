@@ -14,7 +14,9 @@ export default function Index() {
       <Link href={'/feed'}>Feed</Link>
       <Link href={'/explore'}>ExplorePage</Link>
 
-      <Link href="/users/123/posts/456">View User 123's Post 456</Link>
+      <Link href="/users/123/posts/456">View User 123s Post 456</Link>
+      <Link href="/admin/users/logs">Go to Admin Log Page</Link>
+      <Link href="/admin/reports/monthly">Go to Admin Reports Page</Link>
     </View>
   );
 }
