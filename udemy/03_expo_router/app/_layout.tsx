@@ -1,27 +1,42 @@
 import { Stack } from 'expo-router';
+import { Drawer } from 'expo-router/drawer';
 
-export default function RootLayout() {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#f4511e',
-        },
-        headerTintColor: '#ffff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-          fontSize: 24,
-        },
-      }}
-    >
-      {/* Tabs */}
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
-      {/* Native Tabs */}
-      {/* <Stack.Screen name="(nativetabs)" options={{ headerShown: false }} /> */}
-    </Stack>
+    <Drawer>
+      <Drawer.Screen
+        name="index"
+        options={{
+          drawerLabel: 'Home',
+          title: 'overview',
+        }}
+      />
+    </Drawer>
   );
 }
+
+// export default function RootLayout() {
+//   return (
+//     <Stack
+//       screenOptions={{
+//         headerStyle: {
+//           backgroundColor: '#f4511e',
+//         },
+//         headerTintColor: '#ffff',
+//         headerTitleStyle: {
+//           fontWeight: 'bold',
+//           fontSize: 24,
+//         },
+//       }}
+//     >
+//       {/* Tabs */}
+//       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+//       {/* Native Tabs */}
+//       {/* <Stack.Screen name="(nativetabs)" options={{ headerShown: false }} /> */}
+//     </Stack>
+//   );
+// }
 
 //* Slot
 // import { Slot } from 'expo-router';
