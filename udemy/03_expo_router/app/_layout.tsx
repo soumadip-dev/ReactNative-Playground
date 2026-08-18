@@ -14,8 +14,11 @@ export default function RootLayout() {
         },
       }}
     >
-      {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-      <Stack.Screen name="(nativetabs)" options={{ headerShown: false }} />
+      {/* Tabs */}
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+      {/* Native Tabs */}
+      {/* <Stack.Screen name="(nativetabs)" options={{ headerShown: false }} /> */}
     </Stack>
   );
 }

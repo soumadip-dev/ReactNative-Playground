@@ -5,7 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function AuthLayout() {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Auth Layout</Text>
       <Slot />
     </SafeAreaView>
   );
