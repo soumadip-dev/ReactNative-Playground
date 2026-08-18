@@ -54,6 +54,9 @@ export default function HomePage() {
         <Link href="/admin/reports/monthly" style={styles.link}>
           Admin Monthly Reports
         </Link>
+        <Link href="/dashboard" style={styles.link}>
+          Dashboard
+        </Link>
 
         <View style={styles.authLinks}>
           <Link href="/login" style={[styles.authLink, styles.login]}>

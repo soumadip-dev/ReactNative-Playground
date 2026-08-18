@@ -30,6 +30,9 @@ export default function Index() {
         <Link href="/admin/reports/monthly" style={styles.link}>
           Admin Monthly Reports
         </Link>
+        <Link href="/dashboard" style={styles.link}>
+          Dashboard
+        </Link>
 
         <Link href="/login" style={[styles.link, styles.login]}>
           Login

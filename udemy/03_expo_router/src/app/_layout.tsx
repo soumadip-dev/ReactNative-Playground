@@ -1,40 +1,42 @@
 import { Stack } from 'expo-router';
-import { Drawer } from 'expo-router/drawer';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout() {
   return (
-    <Drawer>
-      <Drawer.Screen
-        name="index"
-        options={{
-          drawerLabel: 'Home',
-          title: 'overview',
-        }}
-      />
-    </Drawer>
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#f4511e',
+        },
+        headerTintColor: '#ffff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          fontSize: 24,
+        },
+      }}
+    >
+      {/* Tabs */}
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+      {/* Native Tabs */}
+      {/* <Stack.Screen name="(nativetabs)" options={{ headerShown: false }} /> */}
+    </Stack>
   );
 }
 
-// export default function RootLayout() {
-//   return (
-//     <Stack
-//       screenOptions={{
-//         headerStyle: {
-//           backgroundColor: '#f4511e',
-//         },
-//         headerTintColor: '#ffff',
-//         headerTitleStyle: {
-//           fontWeight: 'bold',
-//           fontSize: 24,
-//         },
-//       }}
-//     >
-//       {/* Tabs */}
-//       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+//* Drawer
+// import { Drawer } from 'expo-router/drawer';
 
-//       {/* Native Tabs */}
-//       {/* <Stack.Screen name="(nativetabs)" options={{ headerShown: false }} /> */}
-//     </Stack>
+// export default function RootLayout({ children }: { children: React.ReactNode }) {
+//   return (
+//     <Drawer>
+//       <Drawer.Screen
+//         name="index"
+//         options={{
+//           drawerLabel: 'Home',
+//           title: 'overview',
+//         }}
+//       />
+//     </Drawer>
 //   );
 // }
 

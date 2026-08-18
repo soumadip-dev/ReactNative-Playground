@@ -50,6 +50,9 @@ export default function HomePage() {
         <Link href="/admin/users/logs" style={styles.link}>
           Admin Logs
         </Link>
+        <Link href="/dashboard" style={styles.link}>
+          Dashboard
+        </Link>
 
         <Link href="/admin/reports/monthly" style={styles.link}>
           Admin Monthly Reports
