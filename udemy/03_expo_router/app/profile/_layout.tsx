@@ -1,9 +1,3 @@
-// import { Stack } from "expo-router";
-
-// export default function RootLayout() {
-//   return <Stack />;
-// }
-
 import { Slot } from 'expo-router';
 import { StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,9 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function RootLayout() {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>My App Header</Text>
+      <Text style={styles.header}>Profile Header</Text>
       <Slot />
-      <Text style={styles.footer}>My App Footer</Text>
+      <Text style={styles.footer}>Profile Footer</Text>
     </SafeAreaView>
   );
 }
@@ -29,11 +23,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     padding: 12,
     textAlign: 'center',
+    color: '#fff',
+    backgroundColor: '#242222',
   },
   footer: {
     fontSize: 24,
     padding: 12,
     textAlign: 'center',
-    backgroundColor: '#f1f1f1',
+    color: '#fff',
+    backgroundColor: '#242222',
   },
 });

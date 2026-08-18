@@ -3,7 +3,7 @@ import React from 'react';
 
 const FeedPage = () => {
   return (
-    <View>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>feed</Text>
     </View>
   );
