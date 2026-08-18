@@ -1,15 +1,12 @@
 import { View, Text, StyleSheet } from 'react-native';
-import React from 'react';
 
-const NotFound = () => {
+export default function SettingsPage() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Not Found</Text>
+      <Text style={styles.title}>Settings</Text>
     </View>
   );
-};
-
-export default NotFound;
+}
 
 const styles = StyleSheet.create({
   container: {

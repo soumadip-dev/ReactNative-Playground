@@ -13,7 +13,10 @@ export default function RootLayout() {
           fontSize: 24,
         },
       }}
-    />
+    >
+      {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+      <Stack.Screen name="(nativetabs)" options={{ headerShown: false }} />
+    </Stack>
   );
 }
 
