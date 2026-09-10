@@ -2,7 +2,7 @@
 
 Actual UI elements provided by the OS (Android / iOS) you are working on.
 
-**Like:**
+**Examples:**
 
 - Android → View, TextView, Button
 - iOS → UIView, UILabel, UIButton
@@ -10,8 +10,8 @@ Actual UI elements provided by the OS (Android / iOS) you are working on.
 ## Characteristics
 
 1. They are written in native languages like Swift, Objective-C, Java, or Kotlin.
-2. Exist only inside the Android or iOS layer.
-3. Are not directly accessible in the React Native layer.
+2. They exist only inside the Android or iOS layer.
+3. They are not directly accessible from the React Native layer.
 
 ---
 
@@ -27,7 +27,7 @@ Components provided by React Native; we mainly code with core components in Reac
 - ScrollView
 - Pressable
 
-They are written in JavaScript and act as a cross-platform interface, so we write one component that works on both Android and iOS. Actually, React Native under the hood converts the core component to native components.
+They are written in JavaScript and act as a cross-platform interface, so we write one component that works on both Android and iOS. React Native actually converts these core components to native components under the hood.
 
 ## Mapping Examples
 
@@ -48,14 +48,14 @@ They are written in JavaScript and act as a cross-platform interface, so we writ
 # Some Important Notes about React Native Styling
 
 - Styling is JavaScript-based.
-- Flexbox is the only layout system (Grid is not available till now).
-- Default flex direction is **column** (which is **row** in the case of web).
+- Flexbox is the primary layout system (Grid is not available as a layout system in React Native).
+- The default flex direction is **column** (which is **row** on the web).
 
 ---
 
-# List and Data Display Component
+# List and Data Display Components
 
-In web, we use `map()` to render a list of items:
+On the web, we use `map()` to render a list of items:
 
 ```jsx
 {
@@ -63,13 +63,13 @@ In web, we use `map()` to render a list of items:
 }
 ```
 
-We can use the same thing in React Native, but it is not recommended. Here's why:
+We can use the same thing in React Native, but it is not recommended for large lists. Here's why:
 
-- `map()` method loads the full list at once.
-- On mobile, we cannot see the full list at once, but if it loads fully, it will consume a lot of battery and degrade the app experience by slowing down (high memory usage).
-- Results in: slow scrolling, bad user experience.
+- The `map()` method renders the full list at once.
+- On mobile, we cannot see the full list at once, but if the entire list is rendered, it can consume more memory and battery and degrade the app experience.
+- This can result in slow scrolling and a poor user experience.
 
-So React Native provides two best solutions for this:
+So React Native provides two solutions for this:
 
 1. FlatList
 2. SectionList
@@ -78,9 +78,9 @@ So React Native provides two best solutions for this:
 
 # FlatList (Simple List)
 
-FlatList component renders only the items currently in view, making it highly performant for long lists.
+The FlatList component renders only the items currently in view, making it highly performant for long lists.
 
-## Some commonly used props of FlatList
+## Some Commonly Used Props of FlatList
 
 ### `data`
 
@@ -102,7 +102,7 @@ renderItem={({ item }) => (
 
 ### `ListHeaderComponent`
 
-Header component on the top of the list.
+Header component at the top of the list.
 
 ### `ListFooterComponent`
 
@@ -114,7 +114,7 @@ Separator component between items.
 
 ### `ListEmptyComponent`
 
-Show this UI when the list is empty.
+Shows this UI when the list is empty.
 
 ### `horizontal`
 
@@ -130,11 +130,11 @@ Custom key extraction logic for list items.
 
 A performant component designed for rendering sectioned lists.
 
-## Some commonly used props of SectionList
+## Some Commonly Used Props of SectionList
 
 ### `sections`
 
-Array of section objects containing data.
+An array of section objects containing data.
 
 ### `renderItem`
 
@@ -173,7 +173,7 @@ source={{ uri: item?.picture }}
 ## Important Note
 
 - For local images, React Native can automatically understand the image dimensions and display them correctly.
-- For remote images, you must provide the height and width in the `style` prop; otherwise, React Native cannot determine the size and the image won't display.
+- For remote images, you must provide the height and width in the `style` prop; otherwise, React Native cannot determine the size, and the image won't display.
 
 ### Example
 
@@ -187,11 +187,11 @@ source={{ uri: item?.picture }}
 
 By default, scrolling is not available on mobile screens. You have to wrap the content inside `ScrollView`.
 
-## Commonly used props
+## Commonly Used Props
 
 ### `showsVerticalScrollIndicator`
 
-Show or hide the vertical scroll indicator (`true`/`false`).
+Shows or hides the vertical scroll indicator (`true`/`false`).
 
 ### `contentContainerStyle`
 
@@ -209,13 +209,13 @@ Style for the container inside `ScrollView` (useful for padding).
 
 # SafeAreaView
 
-When you put content on the mobile screen, it can go under the notch or other areas where it's not properly visible. To avoid this, we use `SafeAreaView`.
+When you put content on the mobile screen, it can go under the notch or other areas where it is not properly visible. To avoid this, we use `SafeAreaView`.
 
-## Commonly used props
+## Commonly Used Props
 
 ### `edges`
 
-Specify which edges should apply safe area padding.
+Specifies which edges should apply safe area padding.
 
 Available options:
 
@@ -259,224 +259,747 @@ Each pattern serves a different purpose depending on the user experience you wan
 
 React Native developers mainly use two navigation solutions:
 
-| React Navigation                                  | Expo Router                                                                            |
-| ------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Component-based routing                           | File-based routing                                                                     |
-| You manually define navigators and screens.       | Routes are automatically created from the folder structure inside the `app` directory. |
-| Gives full control over navigation configuration. | Simpler and faster to set up in Expo projects.                                         |
+| React Navigation                                        | Expo Router                                                     |
+| ------------------------------------------------------- | --------------------------------------------------------------- |
+| Component-based navigation                              | File-based routing                                              |
+| You manually define navigators and screens              | Routes are automatically created from the file/folder structure |
+| Gives fine-grained control over navigator configuration | Makes routing and deep linking simpler in Expo projects         |
 
-## Why Learn React Navigation if Expo Router Already Exists?
-
-Even if you're building apps with **Expo Router**, learning **React Navigation** is highly recommended.
-
-### Why?
-
-- Expo Router is **built on top of React Navigation**.
-- Understanding React Navigation helps you understand **how navigation works under the hood**.
-- Makes debugging navigation issues much easier.
-- Helps when working on existing React Native projects that don't use Expo Router.
-- Gives a stronger understanding of concepts like:
-  - Stack Navigation
-  - Tab Navigation
-  - Drawer Navigation
-  - Navigation State
-  - Screen Lifecycle
+Expo currently recommends Expo Router for Expo projects, and new Expo projects created with `create-expo-app` include Expo Router by default.
 
 ---
 
-# React Navigation (Traditional React Native)
+# Expo Router
 
-> **Note**
->
-> Before Expo SDK **56**, React Navigation was commonly used directly in Expo projects.
->
-> Starting from **Expo SDK 56**, Expo Router is the recommended navigation solution for Expo apps.
+**Expo Router** is a file-based routing library for Expo and React Native applications.
+
+Instead of manually registering every screen in a navigator, Expo Router uses the files and folders inside the application's routing directory to automatically create routes.
+
+For example:
+
+```text
+src/
+└── app/
+    ├── index.tsx
+    ├── profile.tsx
+    └── settings.tsx
+```
+
+This creates:
+
+```text
+/           → index.tsx
+/profile    → profile.tsx
+/settings   → settings.tsx
+```
+
+Expo Router also supports nested routes, dynamic routes, route groups, layouts, tabs, drawers, stacks, modals, and deep linking.
 
 ---
 
-# Stack Navigator
+# What is File-Based Routing?
 
-A **Stack Navigator** manages screens in a **Last In, First Out (LIFO)** order.
-
-Whenever you navigate to a new screen, it is pushed onto the top of the stack. Pressing the back button pops the current screen and returns to the previous one.
-
-## Best Use Cases
-
-- Login Flow
-- Product Details
-- Settings
-- Profile Pages
-- Multi-step Forms
-
-## Basic Example
+In traditional navigation, we usually define screens manually:
 
 ```tsx
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+<Stack.Navigator>
+  <Stack.Screen name="Home" component={HomeScreen} />
+  <Stack.Screen name="Profile" component={ProfileScreen} />
+</Stack.Navigator>
+```
 
-const Stack = createNativeStackNavigator();
+We explicitly tell the navigator:
 
-function RootStack() {
+```text
+Home → HomeScreen
+Profile → ProfileScreen
+```
+
+With Expo Router, the file structure itself defines the routes.
+
+```text
+app/
+├── index.tsx
+└── products/
+    ├── index.tsx
+    └── details.tsx
+```
+
+Expo Router automatically understands:
+
+```text
+/                  → app/index.tsx
+/products          → app/products/index.tsx
+/products/details  → app/products/details.tsx
+```
+
+So the filesystem becomes part of the navigation structure.
+
+## `index.tsx`
+
+Represents the default route of a directory.
+
+## `_layout.tsx`
+
+is a special file in Expo Router. It is **not a screen itself**.
+Instead, it defines how the routes inside its directory are organized and displayed.
+
+For example:
+
+```text
+app/
+├── _layout.tsx
+├── index.tsx
+└── profile.tsx
+```
+
+A root `_layout.tsx` can define the application's Stack:
+
+```tsx
+import { Stack } from 'expo-router';
+
+export default function RootLayout() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} />
-
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-    </Stack.Navigator>
-  );
-}
-```
-
----
-
-## Navigating Between Screens
-
-React Navigation provides multiple ways to navigate.
-
-### Using `Link`
-
-```tsx
-import { Link } from '@react-navigation/native';
-
-<Link to={{ screen: 'Profile' }}>Go to Profile</Link>;
-```
-
----
-
-### Using `useNavigation`
-
-```tsx
-import { useNavigation } from '@react-navigation/native';
-
-const HomeScreen = () => {
-  const navigation = useNavigation<any>();
-
-  return <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />;
-};
-```
-
----
-
-# Bottom Tab Navigator
-
-A **Bottom Tab Navigator** displays a tab bar at the bottom of the screen that allows users to quickly switch between top-level screens.
-
-This navigation pattern is commonly used in applications like:
-
-- Instagram
-- WhatsApp
-- Facebook
-
-## Example
-
-```tsx
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-const Tab = createBottomTabNavigator();
-
-function TabNavigator() {
-  return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarActiveTintColor: '',
-        tabBarInactiveTintColor: '',
-        tabBarStyle: {},
-        headerStyle: {},
-        headerTintColor: '',
-        headerTitleStyle: {},
-      }}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+    <Stack>
+      <Stack.Screen
+        name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
         }}
       />
 
-      {/* More screens */}
-    </Tab.Navigator>
+      <Stack.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+        }}
+      />
+    </Stack>
   );
+}
+```
+
+## `Link` Component
+
+Expo Router provides the `Link` component for declarative navigation.
+
+```tsx
+import { Link } from 'expo-router';
+
+export default function HomeScreen() {
+  return <Link href="/profile">Go to Profile</Link>;
+}
+```
+
+Clicking the link navigates to:
+
+```text
+/profile
+```
+
+The `Link` component is useful when navigation behaves similarly to a link.
+
+For button-based or event-based navigation, you can use the router API.
+
+## Router Object
+
+Expo Router provides the `router` object for programmatic navigation.
+
+- **router.push('/profile')**: Adds a new route to the navigation stack. The previous screen remains in the navigation history.
+  Example: `Home → Profile`
+
+- **router.replace('/home')**: Replaces the current route. This is useful mainly for authentication flows.
+  Example: `Login → Replace → Home`
+
+- **router.back()**: Navigates back to the previous screen.
+  Example:
+
+```text
+Home → Profile → Settings
+                  ↓
+              router.back()
+                  ↓
+               Profile
+```
+
+---
+
+# Nested Routes
+
+Expo Router supports nested routes through directories. We can create deeper navigation structures simply by creating directories.
+
+Example:
+
+```text
+app/
+└── admin/
+    └── users/
+        └── roles/
+            └── index.tsx
+```
+
+creates:
+
+```text
+/admin/users/roles
+```
+
+This is one of the main advantages of file-based routing: the directory structure naturally represents the route hierarchy.
+
+---
+
+# Dynamic Routes
+
+Sometimes the route depends on dynamic data.
+
+For example, suppose we have:
+
+```text
+/posts/1
+/posts/2
+/posts/3
+```
+
+We don't want to create:
+
+```text
+post1.tsx
+post2.tsx
+post3.tsx
+```
+
+Instead, we create one dynamic route:
+
+```text
+app/
+└── posts/
+    └── [postId].tsx
+```
+
+The `[postId]` represents a dynamic route parameter.
+
+This single file can handle:
+
+```text
+/posts/1
+/posts/2
+/posts/3
+/posts/100
+```
+
+and so on.
+
+## Accessing the Dynamic Parameter
+
+Use `useLocalSearchParams()`:
+
+```tsx
+import { Text } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+
+export default function PostScreen() {
+  const { postId } = useLocalSearchParams();
+
+  return <Text>Post ID: {postId}</Text>; // suppose /posts/10 will print: Post ID: 10
 }
 ```
 
 ---
 
-# Drawer Navigator
+# Catch-All Routes
 
-A **Drawer Navigator** displays a navigation panel that slides in from the side of the screen.
+Sometimes we don't know how many URL segments will exist.
 
-Users can open it by:
+For example:
 
-- Swiping from the edge
-- Tapping the menu (hamburger) icon
+```text
+/admin/users/roles
+/admin/reports/logs/date
+/admin/settings/security
+```
 
-It is useful when an app has many top-level screens.
+Instead of creating separate routes for every possible path, we can use a **catch-all route**.
 
-## Example
+Create:
+
+```text
+app/
+└── [...segments].tsx
+```
+
+The `[...]` syntax means the route can capture multiple segments.
+
+Example:
 
 ```tsx
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Text } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 
-const Drawer = createDrawerNavigator();
+export default function CatchAllScreen() {
+  const { segments } = useLocalSearchParams();
 
-function MyDrawer() {
+  return <Text>{JSON.stringify(segments)}</Text>;
+}
+```
+
+For example:
+
+```text
+/admin/users/roles
+```
+
+The `segments` value can represent:
+
+```text
+["admin", "users", "roles"]
+```
+
+This is useful when the number of nested route segments is variable.
+
+---
+
+# Custom Unmatched Route
+
+Sometimes a user navigates to a route that does not exist.
+
+For example:
+
+```text
+/something-that-does-not-exist
+```
+
+Expo Router provides:
+
+```text
++not-found.tsx
+```
+
+for handling unmatched routes.
+
+```tsx
+import { Text, View } from 'react-native';
+
+export default function NotFoundScreen() {
   return (
-    <Drawer.Navigator>
-      <Drawer.Screen name="Home" component={HomeScreen} />
+    <View>
+      <Text>Page Not Found</Text>
+    </View>
+  );
+}
+```
 
-      <Drawer.Screen name="Profile" component={ProfileScreen} />
-    </Drawer.Navigator>
+The `+` prefix has special meaning in Expo Router. `+not-found.tsx` is specifically used for routes that don't match any defined route.
+
+---
+
+# Route Groups
+
+Route groups are created using parentheses:
+
+```text
+(auth)
+(tabs)
+(admin)
+```
+
+Example:
+
+```text
+app/
+├── (auth)/
+│   ├── login.tsx
+│   └── register.tsx
+│
+└── index.tsx
+```
+
+The `(auth)` folder is used only for organizing the navigation structure.
+
+It **does not become part of the URL**.
+
+Therefore:
+
+```text
+(auth)/login.tsx
+```
+
+creates:
+
+```text
+/login
+```
+
+not:
+
+```text
+/auth/login
+```
+
+Route groups are useful when you want to organize routes or apply a common layout without adding another URL segment.
+
+---
+
+# `Slot`
+
+Sometimes we want a layout without creating a Stack, Tabs, or Drawer navigator.
+
+For example, we may want:
+
+```text
+┌─────────────────────┐
+│       Header        │
+├─────────────────────┤
+│                     │
+│    Current Screen   │
+│                     │
+├─────────────────────┤
+│       Footer        │
+└─────────────────────┘
+```
+
+For this, Expo Router provides the `Slot` component.
+
+```tsx
+import { Slot } from 'expo-router';
+import { SafeAreaView, View, Text } from 'react-native';
+
+export default function Layout() {
+  return (
+    <SafeAreaView>
+      <View>
+        <Text>Header</Text>
+      </View>
+
+      <Slot />
+
+      <View>
+        <Text>Footer</Text>
+      </View>
+    </SafeAreaView>
+  );
+}
+```
+
+`<Slot />` acts as a **placeholder for the current child route**.
+
+For example:
+
+```text
+app/
+└── social/
+    ├── _layout.tsx
+    ├── index.tsx
+    └── profile.tsx
+```
+
+The `Slot` inside `social/_layout.tsx` renders whichever child route is currently active.
+
+Unlike `<Stack />`, `<Slot />` does not create a navigator. It simply renders the child route inside the layout.
+
+---
+
+# Stack Navigation with Expo Router
+
+A Stack Navigator manages screens in a stack.
+
+Example:
+
+```text
+Home
+ ↓
+Details
+ ↓
+Checkout
+```
+
+When a new screen is opened, it is pushed onto the stack.
+
+When the user goes back, the current screen is removed from the top of the stack.
+
+## Basic Setup
+
+```text
+app/
+├── _layout.tsx
+├── index.tsx
+└── profile.tsx
+```
+
+`_layout.tsx`:
+
+```tsx
+import { Stack } from 'expo-router';
+
+export default function RootLayout() {
+  return <Stack />;
+}
+```
+
+Expo Router automatically treats the files inside the directory as routes in the Stack.
+
+## Stack Screen Options
+
+You can customize the header:
+
+```tsx
+import { Stack } from 'expo-router';
+
+export default function RootLayout() {
+  return (
+    <Stack>
+      <Stack.Screen
+        name="index"
+        options={{
+          title: 'Home',
+          headerStyle: {
+            backgroundColor: 'black',
+          },
+          headerTintColor: 'white',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+    </Stack>
+  );
+}
+```
+
+Common options include:
+
+```text
+title
+headerShown
+headerStyle
+headerTintColor
+headerTitleStyle
+presentation
+```
+
+---
+
+# Modal with Stack
+
+A screen can be presented as a modal using the `presentation` option.
+
+```tsx
+import { Stack } from 'expo-router';
+
+export default function RootLayout() {
+  return (
+    <Stack>
+      <Stack.Screen
+        name="modal"
+        options={{
+          presentation: 'modal',
+        }}
+      />
+    </Stack>
   );
 }
 ```
 
 ---
 
-# Modal Navigation
+# Tab Navigation with Expo Router
 
-A **Modal** is a temporary screen that appears on top of the current screen.
+Tabs are useful for switching between the main sections of an application.
 
-Unlike normal navigation, the underlying screen remains visible behind the modal.
+For example:
 
-Use modals only when user attention is immediately required.
-
-## Common Use Cases
-
-- Login prompt
-- Confirmation dialogs
-- Payment screens
-- Terms & Conditions
-- Filters
-- Image Preview
-
-## Example
-
-```tsx
-<Stack.Screen
-  name="Modal"
-  component={ModalScreen}
-  options={{
-    presentation: 'modal',
-  }}
-/>
+```text
+Home | Search | Profile
 ```
 
-The important configuration is:
+With Expo Router, tabs are usually created inside a route group:
 
-```tsx
-presentation: 'modal';
+```text
+app/
+├── _layout.tsx
+└── (tabs)/
+    ├── _layout.tsx
+    ├── index.tsx
+    ├── settings.tsx
+    └── profile.tsx
 ```
 
-This tells React Navigation to present the screen as a modal instead of a normal stack screen.
+`(tabs)/_layout.tsx`:
+
+```tsx
+import { Tabs } from 'expo-router';
+
+export default function TabLayout() {
+  return (
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: 'blue',
+        headerShown: false,
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color }) => <FontAwesome name="home" size={24} color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color }) => <FontAwesome name="cog" size={24} color={color} />,
+        }}
+      />
+    </Tabs>
+  );
+}
+```
+
+Because `(tabs)` is a route group, it does not appear in the URL.
+
+The tabs can therefore represent:
+
+```text
+/
+/settings
+```
+
+Expo Router's JavaScript `<Tabs>` navigator is configured inside a layout file, and the routes directly inside that directory become tabs.
+
+- **Common Tab options**:
+
+```text
+tabBarActiveTintColor → Sets the color of the active tab.
+tabBarInactiveTintColor → Sets the color of inactive tabs.
+tabBarStyle → Customizes the style of the tab bar.
+tabBarIcon → Provides the icon for a specific tab.
+headerShown → Shows or hides the header.
+title → Sets the title of the tab.
+```
+
+## Native Tabs
+
+Expo Router also provides **Native Tabs**.
+
+Native Tabs use the platform's native tab implementation instead of the JavaScript-based `<Tabs>` navigator.
+
+This can provide a more platform-native look and behavior on Android and iOS.
+
+Example:
+
+`/(tabs)/_layout.tsx`
+
+```tsx
+import { NativeTabs } from 'expo-router/unstable-native-tabs';
+
+export default function TabLayout() {
+  return (
+    <NativeTabs>
+      <NativeTabs.Trigger name="first">
+        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+
+        <NativeTabs.Trigger.Icon sf="house.fill" md="home" />
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="second">
+        <NativeTabs.Trigger.Label>Settings</NativeTabs.Trigger.Label>
+
+        <NativeTabs.Trigger.Icon sf="gear" md="settings" />
+      </NativeTabs.Trigger>
+    </NativeTabs>
+  );
+}
+```
+
+Here:
+
+```text
+sf → SF Symbols for Apple platforms
+md → Material icons for Android
+```
 
 ---
 
-# Choosing the Right Navigation Pattern
+# Drawer Navigation
 
-| Navigation Type | Best For                                                   |
-| --------------- | ---------------------------------------------------------- |
-| **Stack**       | Moving between related screens (Home → Details → Checkout) |
-| **Bottom Tabs** | Switching between major sections of the app                |
-| **Drawer**      | Apps with many top-level pages or settings                 |
-| **Modal**       | Temporary screens requiring user attention                 |
+A Drawer Navigator displays a navigation panel that slides in from the side.
+
+Example:
+
+```text
+app/
+└── drawer/
+    ├── _layout.tsx
+    ├── index.tsx
+    └── profile.tsx
+```
+
+`_layout.tsx`:
+
+```tsx
+import { Drawer } from 'expo-router/drawer';
+
+export default function DrawerLayout() {
+  return (
+    <Drawer>
+      <Drawer.Screen
+        name="index"
+        options={{
+          drawerLabel: 'Home',
+          title: 'Overview',
+        }}
+      />
+
+      <Drawer.Screen
+        name="profile"
+        options={{
+          drawerLabel: 'Profile',
+          title: 'Profile',
+        }}
+      />
+    </Drawer>
+  );
+}
+```
+
+The files inside the directory become the Drawer routes.
+
+---
+
+# Expo Router Important File Conventions
+
+| File / Folder       | Meaning                                                      |
+| ------------------- | ------------------------------------------------------------ |
+| `index.tsx`         | Default route of a directory                                 |
+| `profile.tsx`       | Static route                                                 |
+| `[id].tsx`          | Dynamic route                                                |
+| `[...segments].tsx` | Catch-all dynamic route                                      |
+| `_layout.tsx`       | Defines layout/navigation for child routes                   |
+| `(auth)`            | Route group; does not appear in URL                          |
+| `+not-found.tsx`    | Handles unmatched routes                                     |
+| `Slot`              | Renders the current child route without creating a navigator |
+
+---
+
+# Expo Router Navigation Cheat Sheet
+
+| Requirement                     | Expo Router                |
+| ------------------------------- | -------------------------- |
+| Navigate                        | `router.push('/profile')`  |
+| Replace route                   | `router.replace('/home')`  |
+| Go back                         | `router.back()`            |
+| Declarative navigation          | `<Link href="/profile" />` |
+| Get route params                | `useLocalSearchParams()`   |
+| Stack                           | `<Stack />`                |
+| Tabs                            | `<Tabs />`                 |
+| Native Tabs                     | `<NativeTabs />`           |
+| Drawer                          | `<Drawer />`               |
+| Child-route placeholder         | `<Slot />`                 |
+| Dynamic route                   | `[id].tsx`                 |
+| Catch-all route                 | `[...segments].tsx`        |
+| Route grouping                  | `(group)`                  |
+| Unmatched route                 | `+not-found.tsx`           |
+| Layout/navigation configuration | `_layout.tsx`              |
+
+---
