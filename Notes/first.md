@@ -1003,3 +1003,16 @@ The files inside the directory become the Drawer routes.
 | Layout/navigation configuration | `_layout.tsx`              |
 
 ---
+
+data storage and file system
+
+1. async storage
+2. expo secure store
+3. expo file system
+4. expo sqlite
+
+async storage:
+save data locally on mobile device 
+key value format 
+async store data
+it is good for storing non-sensitive data
