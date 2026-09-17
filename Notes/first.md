@@ -1012,7 +1012,47 @@ data storage and file system
 4. expo sqlite
 
 async storage:
-save data locally on mobile device 
-key value format 
+save data locally on mobile device
+key value format
 async store data
 it is good for storing non-sensitive data
+await AsyncStorage.setItem(STORAGE_KEY, USERNAME);
+const storedUsername = await AsyncStorage.getItem(STORAGE_KEY);
+await AsyncStorage.removeItem(STORAGE_KEY);
+
+
+expo securestore
+encrypt and securitly store data in key valye locally in device exach expo project has seperate storage so no app can get another app dataapi key, token password
+await SecureStore.setItemAsync(STORAGE_KEY, USERNAME);
+const storedUsername = await SecureStore.getItemAsync(STORAGE_KEY);
+await SecureStore.deleteItemAsync(STORAGE_KEY);
+We can also add some option at the time of saving data
+await SecureStore.setItemAsync(STORAGE_KEY, USERNAME, {
+requireAuthentication: true,
+authenticationPrompt: 'Authenticate to access your secret',
+});
+this will throw errors for workign this we need to do some changes in app.json
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
+        }
+      ]
+    ]
+  }
+}
+{
+  "expo": {
+    "ios": {
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+      ... 
+    }
+  }
+}
+now at the time of setting and getting item we need to authenticate using biomatrics
