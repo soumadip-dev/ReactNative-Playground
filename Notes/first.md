@@ -1142,3 +1142,16 @@ Provides access to the local file and directory system. Also allows downloading 
 | `Paths.document` | App's own private storage — for files you want to keep long-term |
 | `Paths.cache`    | Temporary files — can be removed by the OS at any time           |
 | `Paths.bundle`   | Read-only files bundled with the app (images, config, etc.)      |
+
+---
+
+Expo sensors
+A library that provides access to device accelerometer biometer motion gyroscope light magnetometer and pedometer sensors.
+
+Accelerometer
+how the phone is moving or tilting in your physical space
+three dimention
+forword/back, left/right, up/down
+want to make app respose to device movement
+titlt to move a charcter in a game
+shake to refresh
