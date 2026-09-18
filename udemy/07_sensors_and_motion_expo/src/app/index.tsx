@@ -2,6 +2,7 @@ import { View, StyleSheet } from 'react-native';
 import AccelerometerMonitor from '@/components/Accelerometer';
 import GyroscopeMonitor from '@/components/Gyroscope';
 import Compass from '@/components/Megnetometer';
+import LightsensorExample from '@/components/Lightsensor';
 
 export default function MotionDashboardScreen() {
   return (
@@ -9,6 +10,7 @@ export default function MotionDashboardScreen() {
       <AccelerometerMonitor />
       <GyroscopeMonitor />
       <Compass />
+      <LightsensorExample />
     </View>
   );
 }

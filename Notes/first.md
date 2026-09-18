@@ -1165,3 +1165,7 @@ megnatometer
 this tell you megnated field of device
 compass screen 
 directona, map
+
+barometer devicemotion
+
+Lightsensors
