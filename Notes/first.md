@@ -1155,3 +1155,8 @@ forword/back, left/right, up/down
 want to make app respose to device movement
 titlt to move a charcter in a game
 shake to refresh
+
+Gyroscope 
+how quickely your device is rotating different axios
+suppose steering is ratcing game
+camera rotation with 
