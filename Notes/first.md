@@ -1004,34 +1004,57 @@ The files inside the directory become the Drawer routes.
 
 ---
 
-data storage and file system
+# Data Storage and File System
 
-1. async storage
-2. expo secure store
-3. expo file system
-4. expo sqlite
+## Overview
 
-async storage:
-save data locally on mobile device
-key value format
-async store data
-it is good for storing non-sensitive data
+Four main options for storing data locally:
+
+1. **Async Storage**
+2. **Expo Secure Store**
+3. **Expo SQLite**
+4. **Expo File System**
+
+---
+
+## 1. Async Storage
+
+Saves data locally on the mobile device in **key-value** format, asynchronously.
+
+- Good for storing **non-sensitive** data.
+
+```js
 await AsyncStorage.setItem(STORAGE_KEY, USERNAME);
 const storedUsername = await AsyncStorage.getItem(STORAGE_KEY);
 await AsyncStorage.removeItem(STORAGE_KEY);
+```
 
+---
 
-expo securestore
-encrypt and securitly store data in key valye locally in device exach expo project has seperate storage so no app can get another app dataapi key, token password
+## 2. Expo Secure Store
+
+Encrypts and securely stores data in key-value format, locally on the device. Each Expo project has **separate storage**, so no app can access another app's data.
+
+- Good for: API keys, tokens, passwords.
+
+```js
 await SecureStore.setItemAsync(STORAGE_KEY, USERNAME);
 const storedUsername = await SecureStore.getItemAsync(STORAGE_KEY);
 await SecureStore.deleteItemAsync(STORAGE_KEY);
-We can also add some option at the time of saving data
+```
+
+**Optional authentication when saving data:**
+
+```js
 await SecureStore.setItemAsync(STORAGE_KEY, USERNAME, {
-requireAuthentication: true,
-authenticationPrompt: 'Authenticate to access your secret',
+  requireAuthentication: true,
+  authenticationPrompt: 'Authenticate to access your secret',
 });
-this will throw errors for workign this we need to do some changes in app.json
+```
+
+This will throw an error unless you configure `app.json`:
+
+```json
 {
   "expo": {
     "plugins": [
@@ -1045,14 +1068,77 @@ this will throw errors for workign this we need to do some changes in app.json
     ]
   }
 }
+```
+
+```json
 {
   "expo": {
     "ios": {
       "config": {
         "usesNonExemptEncryption": false
       }
-      ... 
     }
   }
 }
-now at the time of setting and getting item we need to authenticate using biomatrics
+```
+
+> Once configured, setting/getting items will require biometric authentication.
+
+---
+
+## 3. Expo SQLite
+
+Add this to `app.json`:
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "headers": {
+            "Cross-Origin-Embedder-Policy": "credentialless",
+            "Cross-Origin-Opener-Policy": "same-origin"
+          }
+        }
+      ]
+    ]
+  }
+}
+```
+
+```js
+import * as SQLite from 'expo-sqlite';
+
+export const db = await SQLite.openDatabaseAsync('appdata.db');
+
+await db.runAsync(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL
+  );
+`);
+```
+
+---
+
+## 4. Expo File System
+
+Provides access to the local file and directory system. Also allows downloading files from the network.
+
+**Use cases:**
+
+- Saving user-selected photos
+- Exporting app data as documents
+- Downloading a PDF
+- Uploading a file to the backend
+
+**Three key directories:**
+
+| Directory        | Purpose                                                          |
+| ---------------- | ---------------------------------------------------------------- |
+| `Paths.document` | App's own private storage — for files you want to keep long-term |
+| `Paths.cache`    | Temporary files — can be removed by the OS at any time           |
+| `Paths.bundle`   | Read-only files bundled with the app (images, config, etc.)      |
