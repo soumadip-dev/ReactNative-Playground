@@ -1160,3 +1160,8 @@ Gyroscope
 how quickely your device is rotating different axios
 suppose steering is ratcing game
 camera rotation with 
+
+megnatometer
+this tell you megnated field of device
+compass screen 
+directona, map
