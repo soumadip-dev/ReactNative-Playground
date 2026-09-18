@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, FlatList } from 'react-native';
 import { useNotes } from '@/hooks/useNotes';
 import { Header } from '@/components/Header';
