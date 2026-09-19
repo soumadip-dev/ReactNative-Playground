@@ -1169,3 +1169,8 @@ directona, map
 barometer devicemotion
 
 Lightsensors
+light check 
+
+pedometer 
+tracyk steps
+dont support in android
